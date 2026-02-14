@@ -18,7 +18,7 @@ const knowledgeData = {
                     url: "algorithms/linear-regression/index.html",
                     children: [
                         { name: "线性回归", nameEn: "Linear Regression", level: 3, url: "algorithms/linear-regression/index.html", visualLevel: 1 },
-                        { name: "多项式回归", nameEn: "Polynomial Regression", level: 3, url: "#", visualLevel: 1 },
+                        { name: "多项式回归", nameEn: "Polynomial Regression", level: 3, url: "algorithms/polynomial-regression/index.html", visualLevel: 1 },
                         { name: "Ridge 回归", nameEn: "Ridge Regression", level: 3, url: "algorithms/ridge-regression/index.html", visualLevel: 2 },
                         { name: "Lasso 回归", nameEn: "Lasso Regression", level: 3, url: "algorithms/lasso-regression/index.html", visualLevel: 2 }
                     ]
