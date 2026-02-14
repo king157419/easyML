@@ -107,8 +107,10 @@ function initKnowledgeGraph() {
         return;
     }
 
-    const width = container.clientWidth;
-    const height = 600;
+    // 获取父容器高度，自适应屏幕
+    const parent = container.parentElement;
+    const width = parent.clientWidth - 40;
+    const height = Math.max(500, parent.clientHeight - 40);
 
     console.log('Initializing force-directed knowledge graph...');
 
@@ -118,15 +120,28 @@ function initKnowledgeGraph() {
     // 创建 SVG
     svg = d3.select('#knowledge-graph')
         .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('viewBox', [0, 0, width, height]);
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .style('min-height', height + 'px')
+        .attr('viewBox', [0, 0, width, height])
+        .attr('preserveAspectRatio', 'xMidYMid meet');
 
-    // 添加缩放功能
+    // 添加缩放功能 - 仅响应 Ctrl+滚轮或双指手势
     const zoom = d3.zoom()
         .scaleExtent([0.3, 3])
+        .filter((event) => {
+            // 允许：双指手势（触控板/触屏）、Ctrl+滚轮
+            if (event.type === 'mousedown' && event.button === 0) return true;
+            if (event.type === 'wheel') {
+                // 检测触控板双指滚动（通常 ctrlKey 为 false 但有明显惯性）
+                // 或 Ctrl + 滚轮
+                return event.ctrlKey || event.touches > 0;
+            }
+            if (event.type === 'touchstart' || event.type === 'touchmove') return true;
+            return false;
+        })
         .on('zoom', (event) => {
-            g.attr('transform', event.transform);
+            g.transition().duration(50).attr('transform', event.transform);
             currentTransform = event.transform;
         });
 
@@ -149,18 +164,20 @@ function initKnowledgeGraph() {
         d.y = height / 2 + r * Math.sin(angle - Math.PI / 2);
     });
 
-    // 创建力模拟
+    // 创建力模拟 - 调整参数更丝滑
     simulation = d3.forceSimulation(nodes)
+        .alphaDecay(0.01)       // 更慢的冷却速度
+        .velocityDecay(0.3)     // 阻尼系数
         .force('link', d3.forceLink(links)
             .id(d => d.id)
-            .distance(d => 60 + d.source.depth * 20)
-            .strength(0.8))
+            .distance(d => 50 + d.source.depth * 25)
+            .strength(0.7))
         .force('charge', d3.forceManyBody()
-            .strength(-200)
-            .distanceMax(300))
-        .force('center', d3.forceCenter(width / 2, height / 2))
-        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 10))
-        .force('radial', d3.forceRadial(d => d.depth * 100, width / 2, height / 2).strength(0.3));
+            .strength(-180)
+            .distanceMax(350))
+        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.1))
+        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 15).strength(0.8))
+        .force('radial', d3.forceRadial(d => d.depth * 90, width / 2, height / 2).strength(0.25));
 
     // 绘制连接线
     link = g.append('g')
@@ -243,9 +260,10 @@ function getNodeRadius(d) {
 }
 
 function dragStarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart();
+    if (!event.active) simulation.alphaTarget(0.2).restart();
     d.fx = d.x;
     d.fy = d.y;
+    d3.select(this).raise();
 }
 
 function dragged(event, d) {
@@ -255,8 +273,11 @@ function dragged(event, d) {
 
 function dragEnded(event, d) {
     if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
+    // 延迟释放，让动画更平滑
+    setTimeout(() => {
+        d.fx = null;
+        d.fy = null;
+    }, 100);
 }
 
 // 窗口大小改变时重新绘制

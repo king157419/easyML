@@ -105,10 +105,9 @@ header .subtitle-desc {
 
 #knowledge-graph {
     flex: 1;
-    min-height: 300px;
+    min-height: 400px;
     background: var(--bg-color);
     border-radius: 12px;
-    padding: 15px;
 }
 
 .hint {
