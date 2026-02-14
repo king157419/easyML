@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBSCAN 可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">DBSCAN 密度聚类可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 DBSCAN？</h2>
+                    <div class="intro-content">
+                        <p><strong>DBSCAN（Density-Based Spatial Clustering of Applications with Noise）</strong> 是一种基于<strong>密度的聚类算法</strong>。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>聚类是密度相连的点的集合</li>
+                            <li>可以发现任意形状的聚类</li>
+                            <li>自动识别噪声点</li>
+                            <li>不需要预先指定聚类数量</li>
+                        </ul>
+                        <p><strong>与 K-Means 对比：</strong></p>
+                        <ul>
+                            <li>K-Means：基于距离，假设聚类是球形的</li>
+                            <li>DBSCAN：基于密度，可以发现任意形状</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察 DBSCAN 如何根据密度进行聚类</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="blobs">球形聚类</option>
+                                <option value="moons">月形数据</option>
+                                <option value="circles">同心圆</option>
+                                <option value="random">随机噪声</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>ε (邻域半径):</label>
+                            <input type="range" id="epsilon" min="10" max="100" step="5" value="30">
+                            <span id="epsilon-value" class="value-display">30</span>
+                        </div>
+                        <div class="control-group">
+                            <label>MinPts (最小点数):</label>
+                            <input type="range" id="minpts" min="2" max="10" step="1" value="4">
+                            <span id="minpts-value" class="value-display">4</span>
+                        </div>
+                        <div class="control-group">
+                            <label>显示邻域:</label>
+                            <input type="checkbox" id="show-neighborhood">
+                        </div>
+                        <div class="control-group">
+                            <button id="run-btn" class="btn btn-primary">运行 DBSCAN</button>
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">聚类信息：</h4>
+                        <p>聚类数量: <code id="num-clusters">0</code></p>
+                        <p>噪声点: <code id="noise-count">0</code></p>
+                        <p>核心点: <code id="core-count">0</code></p>
+                        <p>边界点: <code id="border-count">0</code></p>
+                    </div>
+
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">图例：</h4>
+                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 12px; height: 12px; background: #10b981; border-radius: 50%;"></div>
+                                <span>聚类 1</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 12px; height: 12px; background: #3b82f6; border-radius: 50%;"></div>
+                                <span>聚类 2</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                <span>聚类 3</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 12px; height: 12px; background: #ef4444; border-radius: 50%;"></div>
+                                <span>噪声点</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <div style="width: 16px; height: 16px; border: 2px solid #8b5cf6; border-radius: 50%;"></div>
+                                <span>核心点（边框加粗）</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 核心定义：</strong></p>
+                        <ul>
+                            <li><strong>ε-邻域</strong>：点 p 的 ε 邻域是所有与 p 距离 ≤ ε 的点集</li>
+                            <li><strong>核心点</strong>：ε-邻域中至少有 MinPts 个点</li>
+                            <li><strong>边界点</strong>：ε-邻域中点数 < MinPts，但在某个核心点的邻域内</li>
+                            <li><strong>噪声点</strong>：既不是核心点也不是边界点</li>
+                        </ul>
+
+                        <p><strong>2. 密度可达性：</strong></p>
+                        <ul>
+                            <li>点 q 从点 p <strong>密度可达</strong>：存在一条链 p=p₁, p₂, ..., pₙ=q，每个 pᵢ 都是核心点，且 pᵢ₊₁ 在 pᵢ 的 ε-邻域内</li>
+                        </ul>
+
+                        <p><strong>3. 密度相连：</strong></p>
+                        <ul>
+                            <li>点 p 和 q <strong>密度相连</strong>：存在一个点 o，使得 p 和 q 都从 o 密度可达</li>
+                        </ul>
+
+                        <p><strong>4. 聚类定义：</strong></p>
+                        <ul>
+                            <li>一个聚类是基于密度可达性的最大密度相连点集</li>
+                            <li>聚类中的任何点都从该聚类中的某个核心点密度可达</li>
+                        </ul>
+
+                        <p><strong>5. 算法步骤：</strong></p>
+                        <ol>
+                            <li>随机选择一个未访问的点 p</li>
+                            <li>如果 p 是核心点，创建新聚类，递归添加所有密度可达的点</li>
+                            <li>如果 p 不是核心点，标记为噪声（稍后可能被重新分类为边界点）</li>
+                            <li>重复直到所有点都被访问</li>
+                        </ol>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 DBSCAN，理解密度聚类</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 DBSCAN 算法</li>
+                            <li>区域查询（Range Query）优化</li>
+                            <li>KD树加速</li>
+                            <li>与 K-Means 对比</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../k-means/index.html">K-Means 聚类</a></li>
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                        <li><a href="../tsne/index.html">t-SNE 降维</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>密度聚类 · 任意形状 · 噪声检测</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/dbscan.js"></script>
+</body>
+</html>
