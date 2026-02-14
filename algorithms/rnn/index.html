@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RNN 循环神经网络可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">RNN 循环神经网络可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 RNN？</h2>
+                    <div class="intro-content">
+                        <p><strong>循环神经网络（Recurrent Neural Network, RNN）</strong> 是一种专门处理<strong>序列数据</strong>的神经网络。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>像人有"短期记忆"——记住之前的上下文</li>
+                            <li>逐层处理信息，而不是一次性处理全部</li>
+                            <li>输出会反馈到下一层作为输入（循环）</li>
+                            <li>适合处理：时间序列、文本、语音、股票预测等</li>
+                        </ul>
+                        <p><strong>与普通神经网络对比：</strong></p>
+                        <ul>
+                            <li><strong>普通 NN</strong>：一次性前向传播，无状态保持</li>
+                            <li><strong>RNN</strong>：隐状态 (h) 会在层间传递，形成"记忆"</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整参数，观察 RNN 如何处理序列数据</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>隐藏层数:</label>
+                            <input type="number" id="hidden-layers" min="1" max="3" value="2">
+                        </div>
+                        <div class="control-group">
+                            <label>每层神经元:</label>
+                            <input type="number" id="neurons-per-layer" min="2" max="8" value="4">
+                        </div>
+                        <div class="control-group">
+                            <label>序列长度:</label>
+                            <input type="range" id="seq-length" min="5" max="20" step="1" value="10">
+                            <span id="seq-length-value" class="value-display">10</span>
+                        </div>
+                        <div class="control-group">
+                            <label>输入类型:</label>
+                            <select id="input-type">
+                                <option value="sine">正弦波</option>
+                                <option value="cos">余弦波</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="play-btn" class="btn btn-primary">播放序列</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">网络结构信息：</h4>
+                        <p>总参数: <code id="total-params">0</code></p>
+                        <p>序列步骤: <span id="step-count">0</span> / <span id="total-steps">10</span></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>核心公式 —— 隐状态传递：</strong></p>
+                        <p>$$h_t = \sigma(W_h \cdot h_{t-1})$$</p>
+                        <p>其中：</p>
+                        <ul>
+                            <li>$\sigma$ 是激活函数（Sigmoid/Tanh/ReLU）</li>
+                            <li>$W_h$ 是权重矩阵</li>
+                            <li>$h_t$ 是当前时间步的隐状态</li>
+                        </ul>
+                        <p><strong>序列预测：</strong></p>
+                        <p>$$\hat{y}_t = o_t(h_t)$$</p>
+                        <p><strong>反向传播（训练时）：</strong></p>
+                        <p>通过 BPTT（时序反向传播）学习序列模式。</p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 RNN，理解序列建模</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>NumPy 实现 RNN</li>
+                            <li>梯度裁剪（Clipping Gradient）</li>
+                            <li>多种激活函数</li>
+                            <li>序列预测演示</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../lstm/index.html">LSTM 长短期记忆网络</a></li>
+                        <li><a href="../knn/index.html">K 近邻</a></li>
+                        <li><a href="../cnn/index.html">卷积神经网络 (CNN)</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-4">Level 4</span>
+                    <p>深度学习 · 序列建模 · 状态记忆</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/rnn.js"></script>
+</body>
+</html>
