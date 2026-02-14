@@ -157,22 +157,27 @@
       "id": "harness-006",
       "category": "automation",
       "description": "验证测试机制",
-      "status": "pending",
+      "status": "done",
       "steps": [
-        "定义验证测试概念",
-        "每次新任务前先验证已有功能",
-        "发现 bug 立即修复而非继续新功能"
+        "创建 verify.sh 验证测试脚本",
+        "检查核心文件完整性（index.html, CSS, JS）",
+        "检查已实现的算法页面",
+        "自动启动开发服务器进行验证",
+        "报告验证结果并决定是否可以继续新功能"
       ]
     },
     {
       "id": "harness-007",
       "category": "git",
       "description": "自动 commit 机制",
-      "status": "pending",
+      "status": "done",
       "steps": [
-        "每个任务完成后自动 git add",
-        "生成描述性 commit message",
-        "包含 Co-Authored-By 标记"
+        "创建 commit_and_update.sh 自动提交脚本",
+        "检查 git 仓库状态",
+        "分析变更类型（Add/Update/Remove）",
+        "从 feature_list.json 获取任务名生成 commit message",
+        "包含 Co-Authored-By: Claude Opus 4.6 标记",
+        "支持用户确认后执行 git add 和 commit"
       ]
     },
     {

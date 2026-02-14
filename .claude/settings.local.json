@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "Bash(bash .claude/harness/session_start.sh)"
+      "Bash(bash .claude/harness/session_start.sh)",
+      "Bash(git commit:*)"
     ]
-  }
+  },
+  "outputStyle": "Learning"
 }
