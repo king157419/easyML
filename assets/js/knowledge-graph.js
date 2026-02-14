@@ -75,7 +75,7 @@ const knowledgeData = {
                     level: 2,
                     children: [
                         { name: "PCA", nameEn: "PCA", level: 3, url: "algorithms/pca/index.html", visualLevel: 2 },
-                        { name: "t-SNE", nameEn: "t-SNE", level: 3, url: "#", visualLevel: 2 },
+                        { name: "t-SNE", nameEn: "t-SNE", level: 3, url: "algorithms/tsne/index.html", visualLevel: 2 },
                         { name: "LDA", nameEn: "LDA", level: 3, url: "#", visualLevel: 2 }
                     ]
                 }

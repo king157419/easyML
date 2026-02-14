@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>t-SNE 可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">t-SNE 降维可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 t-SNE？</h2>
+                    <div class="intro-content">
+                        <p><strong>t-SNE（t-Distributed Stochastic Neighbor Embedding）</strong> 是一种用于<strong>降维</strong>的技术，特别适合将高维数据可视化到2D或3D空间。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>高维空间中"相似"的点在低维中也应该"相似"</li>
+                            <li>保持数据的局部结构：近邻点保持近邻</li>
+                            <li>使用概率分布表示点之间的相似度</li>
+                        </ul>
+                        <p><strong>与 PCA 对比：</strong></p>
+                        <ul>
+                            <li>PCA：保持全局结构（最大方差方向）</li>
+                            <li>t-SNE：保持局部结构（近邻关系）</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察 t-SNE 如何将高维数据降维到 2D 空间</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="clusters">聚类数据</option>
+                                <option value="swiss">瑞士卷</option>
+                                <option value="digits">手写数字</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>困惑度 (Perplexity):</label>
+                            <input type="range" id="perplexity" min="5" max="50" step="5" value="30">
+                            <span id="perplexity-value" class="value-display">30</span>
+                        </div>
+                        <div class="control-group">
+                            <label>学习率:</label>
+                            <input type="range" id="learning-rate" min="10" max="1000" step="10" value="200">
+                            <span id="learning-rate-value" class="value-display">200</span>
+                        </div>
+                        <div class="control-group">
+                            <label>迭代次数:</label>
+                            <input type="range" id="iterations" min="100" max="2000" step="100" value="500">
+                            <span id="iterations-value" class="value-display">500</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="run-btn" class="btn btn-primary">运行 t-SNE</button>
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div class="viz-panel">
+                            <h4>原始数据 (PCA 投影)</h4>
+                            <div id="original-viz" class="viz-sub"></div>
+                        </div>
+                        <div class="viz-panel">
+                            <h4>t-SNE 结果</h4>
+                            <div id="tsne-viz" class="viz-sub"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">t-SNE 信息：</h4>
+                        <p>当前迭代: <code id="current-iteration">0</code> / <span id="max-iteration">500</span></p>
+                        <p>损失值 (KL散度): <code id="kl-divergence">--</code></p>
+                        <p>数据点数: <code id="num-points">--</code></p>
+                        <p>原始维度: <code id="original-dim">--</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 高维相似度：</strong></p>
+                        <p>对于点 i 和 j，条件概率：</p>
+                        <p>$$p_{j|i} = \frac{\exp(-\|x_i - x_j\|^2 / 2\sigma_i^2)}{\sum_{k \neq i} \exp(-\|x_i - x_k\|^2 / 2\sigma_i^2)}$$</p>
+
+                        <p><strong>2. 对称化：</strong></p>
+                        <p>$$p_{ij} = \frac{p_{j|i} + p_{i|j}}{2n}$$</p>
+
+                        <p><strong>3. 低维相似度（t分布）：</strong></p>
+                        <p>$$q_{ij} = \frac{(1 + \|y_i - y_j\|^2)^{-1}}{\sum_{k \neq l} (1 + \|y_k - y_l\|^2)^{-1}}$$</p>
+
+                        <p><strong>4. 最小化 KL 散度：</strong></p>
+                        <p>$$C = KL(P\|Q) = \sum_{i \neq j} p_{ij} \log \frac{p_{ij}}{q_{ij}}$$</p>
+
+                        <p><strong>关键参数：</strong></p>
+                        <ul>
+                            <li><strong>困惑度（Perplexity）</strong>：控制每个点考虑多少个近邻</li>
+                            <li><strong>学习率</strong>：梯度下降的步长</li>
+                            <li><strong>迭代次数</strong>：优化时间</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 t-SNE，理解流形学习</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 t-SNE 算法</li>
+                            <li>高维相似度计算</li>
+                            <li>梯度下降优化</li>
+                            <li>与其他降维方法对比</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../pca/index.html">主成分分析 (PCA)</a></li>
+                        <li><a href="../k-means/index.html">K-Means 聚类</a></li>
+                        <li><a href="../nn/index.html">神经网络</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>降维可视化 · 流形学习 · 非线性映射</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/tsne.js"></script>
+</body>
+</html>
