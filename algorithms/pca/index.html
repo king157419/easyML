@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCA 主成分分析可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">PCA 主成分分析可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 PCA？</h2>
+                    <div class="intro-content">
+                        <p><strong>主成分分析（Principal Component Analysis, PCA）</strong> 是一种降维技术。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>高维数据难以可视化和处理（"维数灾难"）</li>
+                            <li>PCA 找到数据方差最大的方向（主成分）</li>
+                            <li>丢弃其他方向，只保留最重要的几个成分</li>
+                            <li>实现降维，减少计算量，同时保留大部分信息</li>
+                        </ul>
+                        <p><strong>常见应用：</strong>图像压缩、特征提取、数据可视化、噪声过滤等。</p>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整参数，观察 PCA 如何降维</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>样本数:</label>
+                            <input type="range" id="sample-count" min="50" max="500" step="50" value="200">
+                            <span id="sample-count-value" class="value-display">200</span>
+                        </div>
+                        <div class="control-group">
+                            <label>主成分数:</label>
+                            <input type="range" id="num-components" min="2" max="10" step="1" value="2">
+                            <span id="num-components-value" class="value-display">2</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="gaussian">高斯分布</option>
+                                <option value="circle">圆形分布</option>
+                                <option value="swiss">瑞士卷</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="generate-btn" class="btn btn-primary">生成数据</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container">
+                        <div style="display: flex; gap: 20px; align-items: flex-start;">
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px;">原始数据</h4>
+                                <div id="raw-scatter" style="width: 400px; height: 400px;"></div>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px;">降维后数据</h4>
+                                <div id="reduced-scatter" style="width: 400px; height: 400px;"></div>
+                            </div>
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 10px;">主成分方向</h4>
+                                <div id="components-viz" style="width: 400px; height: 200px;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">降维信息：</h4>
+                        <p>原始维度: <code id="original-dim">--</code></p>
+                        <p>保留主成分: <code id="reduced-dim">--</code></p>
+                        <p>解释方差: <code id="explained-variance">--</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>PCA 的核心是计算协方差矩阵，找到特征向量和特征值。</p>
+                        <p><strong>步骤：</strong></p>
+                        <ol>
+                            <li>数据中心化（减去均值）</li>
+                            <li>计算协方差矩阵</li>
+                            <li>计算特征值和特征向量</li>
+                            <li>选择 top-k 个主成分</li>
+                            <li>数据投影到新空间</li>
+                        </ol>
+                        <p><strong>协方差矩阵：</strong></p>
+                        <p>$$Cov[i,j] = E[(X_i - \mu_i)(X_j - \mu_j)^T]$$</p>
+                        <p>其中：</p>
+                        <ul>
+                            <li>$Cov[i,j]$ 是特征 $i$ 和 $j$ 的协方差</li>
+                            <li>$E$ 是特征值组成的对角矩阵</li>
+                            <li>$X_i$ 是第 $i$ 个数据点</li>
+                            <li>$\mu_i$ 是第 $i$ 个特征的均值</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 PCA，理解降维算法</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>NumPy 实现 PCA</li>
+                            <li>手算协方差矩阵</li>
+                            <li>特征值可视化</li>
+                            <li>Scikit-learn 对比</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/index.html">线性回归</a></li>
+                        <li><a href="../logistic-regression/index.html">逻辑回归</a></li>
+                        <li><a href="../knn/index.html">K 近邻</a></li>
+                        <li><a href="../svm/index.html">支持向量机</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>结构理解 · 降维技术 · 特征提取</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/pca.js"></script>
+</body>
+</html>
