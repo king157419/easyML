@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>层次聚类可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">层次聚类可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是层次聚类？</h2>
+                    <div class="intro-content">
+                        <p><strong>层次聚类（Hierarchical Clustering）</strong> 是一种构建聚类层次结构的算法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>开始时每个点是一个聚类</li>
+                            <li>逐步合并最相似的聚类</li>
+                            <li>最终形成一棵"树"（树状图 Dendrogram）</li>
+                        </ul>
+                        <p><strong>与 K-Means 对比：</strong></p>
+                        <ul>
+                            <li>K-Means：需要预先指定聚类数 K</li>
+                            <li>层次聚类：不需要指定 K，可以事后从树状图选择</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察聚类如何逐步合并形成层次结构</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="blobs">球形聚类</option>
+                                <option value="chain">链状数据</option>
+                                <option value="uneven">不均匀大小</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>链接方式:</label>
+                            <select id="linkage-select">
+                                <option value="single">单链接 (Single)</option>
+                                <option value="complete">全链接 (Complete)</option>
+                                <option value="average">平均链接 (Average)</option>
+                                <option value="ward">Ward 方法</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>距离度量:</label>
+                            <select id="distance-select">
+                                <option value="euclidean">欧氏距离</option>
+                                <option value="manhattan">曼哈顿距离</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>聚类数:</label>
+                            <input type="range" id="num-clusters" min="1" max="10" step="1" value="3">
+                            <span id="num-clusters-value" class="value-display">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label>动画速度:</label>
+                            <input type="range" id="anim-speed" min="1" max="10" step="1" value="5">
+                            <span id="anim-speed-value" class="value-display">5</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="run-btn" class="btn btn-primary">运行聚类</button>
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div class="viz-panel">
+                            <h4>数据点</h4>
+                            <div id="data-viz" class="viz-sub"></div>
+                        </div>
+                        <div class="viz-panel">
+                            <h4>树状图 (Dendrogram)</h4>
+                            <div id="dendrogram-viz" class="viz-sub"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">聚类信息：</h4>
+                        <p>当前层级: <code id="current-level">0</code></p>
+                        <p>合并距离: <code id="merge-distance">0</code></p>
+                        <p>聚类数: <code id="cluster-count">0</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 距离度量：</strong></p>
+                        <ul>
+                            <li>欧氏距离：$d(p, q) = \sqrt{\sum_i (p_i - q_i)^2}$</li>
+                            <li>曼哈顿距离：$d(p, q) = \sum_i |p_i - q_i|$</li>
+                        </ul>
+
+                        <p><strong>2. 聚类间距离（链接方式）：</strong></p>
+                        <ul>
+                            <li><strong>单链接（Single）</strong>：最近点距离
+                                $$d(C_i, C_j) = \min_{p \in C_i, q \in C_j} d(p, q)$$
+                            </li>
+                            <li><strong>全链接（Complete）</strong>：最远点距离
+                                $$d(C_i, C_j) = \max_{p \in C_i, q \in C_j} d(p, q)$$
+                            </li>
+                            <li><strong>平均链接（Average）</strong>：平均点距离
+                                $$d(C_i, C_j) = \frac{1}{|C_i||C_j|} \sum_{p \in C_i} \sum_{q \in C_j} d(p, q)$$
+                            </li>
+                            <li><strong>Ward 方法</strong>：合并后方差增量
+                                $$d(C_i, C_j) = \frac{|C_i||C_j|}{|C_i|+|C_j|} ||\mu_i - \mu_j||^2$$
+                            </li>
+                        </ul>
+
+                        <p><strong>3. 算法步骤：</strong></p>
+                        <ol>
+                            <li>初始化：每个点是一个聚类</li>
+                            <li>计算所有聚类对之间的距离</li>
+                            <li>合并距离最小的两个聚类</li>
+                            <li>更新距离矩阵</li>
+                            <li>重复 2-4 直到只剩一个聚类</li>
+                        </ol>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现层次聚类，理解层次结构</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现层次聚类</li>
+                            <li>不同链接方式对比</li>
+                            <li>树状图绘制</li>
+                            <li>从树状图选择聚类数</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../k-means/index.html">K-Means 聚类</a></li>
+                        <li><a href="../dbscan/index.html">DBSCAN 聚类</a></li>
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>层次结构 · 树状图 · 无需预设 K</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/hierarchical-clustering.js"></script>
+</body>
+</html>

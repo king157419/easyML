@@ -66,7 +66,7 @@ const knowledgeData = {
                     children: [
                         { name: "K-Means", nameEn: "K-Means", level: 3, url: "algorithms/k-means/index.html", visualLevel: 1 },
                         { name: "DBSCAN", nameEn: "DBSCAN", level: 3, url: "algorithms/dbscan/index.html", visualLevel: 2 },
-                        { name: "层次聚类", nameEn: "Hierarchical", level: 3, url: "#", visualLevel: 2 }
+                        { name: "层次聚类", nameEn: "Hierarchical", level: 3, url: "algorithms/hierarchical-clustering/index.html", visualLevel: 2 }
                     ]
                 },
                 {
