@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LDA 可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">LDA 线性判别分析</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 LDA？</h2>
+                    <div class="intro-content">
+                        <p><strong>LDA（Linear Discriminant Analysis，线性判别分析）</strong> 是一种用于降维和分类的监督学习方法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>找到一个投影方向，使得同类数据尽可能紧凑</li>
+                            <li>同时使不同类数据尽可能分离</li>
+                            <li>最大化"类间距离/类内距离"比率</li>
+                        </ul>
+                        <p><strong>与 PCA 对比：</strong></p>
+                        <ul>
+                            <li>PCA：无监督，最大化方差</li>
+                            <li>LDA：有监督，最大化类别可分性</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察 LDA 如何找到最佳投影方向</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="separable">线性可分</option>
+                                <option value="overlapping">重叠分布</option>
+                                <option value="diagonal">对角分布</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>显示:</label>
+                            <select id="show-select">
+                                <option value="both">原始数据 + 投影</option>
+                                <option value="original">仅原始数据</option>
+                                <option value="projected">仅投影后数据</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="generate-btn" class="btn btn-secondary">生成新数据</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div class="viz-panel">
+                            <h4>原始 2D 数据</h4>
+                            <div id="original-viz" class="viz-sub"></div>
+                        </div>
+                        <div class="viz-panel">
+                            <h4>1D 投影（LDA方向）</h4>
+                            <div id="projected-viz" class="viz-sub"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">LDA 信息：</h4>
+                        <p>投影方向: <code id="projection-direction">--</code></p>
+                        <p>类间方差 / 类内方差: <code id="variance-ratio">--</code></p>
+                        <p>分类准确率: <code id="accuracy">--</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 散度矩阵：</strong></p>
+                        <ul>
+                            <li><strong>类内散度矩阵</strong>（Within-class scatter）：
+                                $$S_W = \sum_{c} \sum_{x \in c} (x - \mu_c)(x - \mu_c)^T$$
+                            </li>
+                            <li><strong>类间散度矩阵</strong>（Between-class scatter）：
+                                $$S_B = \sum_{c} n_c (\mu_c - \mu)(\mu_c - \mu)^T$$
+                            </li>
+                        </ul>
+
+                        <p><strong>2. 目标函数：</strong></p>
+                        <p>最大化瑞利商：</p>
+                        <p>$$J(w) = \frac{w^T S_B w}{w^T S_W w}$$</p>
+
+                        <p><strong>3. 最优解：</strong></p>
+                        <p>$$w^* = S_W^{-1} (\mu_1 - \mu_2)$$</p>
+                        <p>即：类内散度的逆乘以类均值差。</p>
+
+                        <p><strong>4. 投影：</strong></p>
+                        <p>新特征 = $w^T x$</p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 LDA，理解监督降维</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 LDA</li>
+                            <li>散度矩阵计算</li>
+                            <li>广义特征值问题</li>
+                            <li>与 PCA 对比</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../pca/index.html">PCA 主成分分析</a></li>
+                        <li><a href="../logistic-regression/index.html">逻辑回归</a></li>
+                        <li><a href="../tsne/index.html">t-SNE 降维</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>监督降维 · 类别可分性 · 散度矩阵</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/lda.js"></script>
+</body>
+</html>
