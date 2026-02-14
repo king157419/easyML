@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>策略梯度可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">策略梯度 (Policy Gradient) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是策略梯度？</h2>
+                    <div class="intro-content">
+                        <p><strong>策略梯度（Policy Gradient）</strong> 是一种直接优化策略参数的强化学习方法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>不学习价值函数，直接学习策略</li>
+                            <li>通过采样轨迹，估计梯度方向</li>
+                            <li>沿着梯度方向更新策略参数</li>
+                        </ul>
+                        <p><strong>与 Q-Learning 对比：</strong></p>
+                        <ul>
+                            <li>Q-Learning：基于价值，间接学习策略</li>
+                            <li>策略梯度：直接优化策略参数</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整策略参数，观察动作概率分布变化</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>状态值:</label>
+                            <input type="range" id="state-value" min="-2" max="2" step="0.1" value="0">
+                            <span id="state-value-display" class="value-display">0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>策略参数 θ:</label>
+                            <input type="range" id="policy-param" min="-3" max="3" step="0.1" value="0">
+                            <span id="policy-param-display" class="value-display">0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>探索度 (σ):</label>
+                            <input type="range" id="exploration" min="0.1" max="2" step="0.1" value="0.5">
+                            <span id="exploration-display" class="value-display">0.5</span>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div id="policy-viz"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">策略信息：</h4>
+                        <div id="action-probs"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">REINFORCE 算法步骤：</h4>
+                        <ol style="font-size: 14px; line-height: 1.6;">
+                            <li>根据当前策略 π_θ 采样动作 a</li>
+                            <li>执行动作，获得奖励 r</li>
+                            <li>计算策略梯度：∇θ log π_θ(a|s)</li>
+                            <li>更新参数：θ ← θ + α · r · ∇θ log π_θ(a|s)</li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 策略表示：</strong></p>
+                        <p>$$\pi_\theta(a|s) = \frac{\exp(f(s, a, \theta))}{\sum_{a'} \exp(f(s, a', \theta))}$$</p>
+
+                        <p><strong>2. 策略梯度定理：</strong></p>
+                        <p>$$\nabla_\theta J(\theta) = \mathbb{E}_{\pi_\theta}[\nabla_\theta \log \pi_\theta(a|s) \cdot Q(s, a)]$$</p>
+
+                        <p><strong>3. REINFORCE 更新：</strong></p>
+                        <p>$$\theta_{t+1} = \theta_t + \alpha_t G_t \nabla_\theta \log \pi_\theta(a_t|s_t)$$</p>
+                        <ul>
+                            <li>$G_t$：折扣累积回报</li>
+                            <li>$\nabla_\theta \log \pi$：对数导数（得分函数）</li>
+                        </ul>
+
+                        <p><strong>4. 优势函数（Advantage Function）：</strong></p>
+                        <p>$$A(s, a) = Q(s, a) - V(s)$$</p>
+                        <p>用优势代替 Q 值可以减少方差，加速训练。</p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现策略梯度，理解策略优化</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 REINFORCE</li>
+                            <li>高斯策略实现</li>
+                            <li>基线函数添加</li>
+                            <li>CartPole 环境</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../q-learning/index.html">Q-Learning</a></li>
+                        <li><a href="../actor-critic/index.html">Actor-Critic</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-5">Level 5</span>
+                    <p>策略优化 · 梯度估计 · 强化学习</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/policy-gradient.js"></script>
+</body>
+</html>

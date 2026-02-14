@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actor-Critic 可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">Actor-Critic 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 Actor-Critic？</h2>
+                    <div class="intro-content">
+                        <p><strong>Actor-Critic</strong> 是一种结合<strong>策略梯度</strong>和<strong>价值函数</strong>的强化学习算法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li><strong>Actor</strong>：负责选择动作，更新策略参数</li>
+                            <li><strong>Critic</strong>：评估动作价值，提供训练信号</li>
+                            <li>两个网络协同学习，提高样本效率</li>
+                        </ul>
+                        <p><strong>与策略梯度对比：</strong></p>
+                        <ul>
+                            <li>策略梯度：使用完整回报（高方差）</li>
+                            <li>Actor-Critic：使用价值估计（低方差）</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察 Actor 和 Critic 如何协同工作</p>
+
+                    <div class="viz-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="margin-bottom: 10px;">Actor 网络输出</h4>
+                            <div id="actor-viz" style="background: var(--bg-color); padding: 15px; border-radius: 8px;"></div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px;">
+                            <h4 style="margin-bottom: 10px;">Critic 价值估计</h4>
+                            <div id="critic-viz" style="background: var(--bg-color); padding: 15px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">算法步骤：</h4>
+                        <div id="algorithm-step" style="font-size: 14px; line-height: 1.8; padding: 10px; background: #1f2937; border-radius: 4px;">
+                            点击"运行一步"开始学习
+                        </div>
+                    </div>
+
+                    <div class="viz-controls">
+                        <button id="step-btn" class="btn btn-primary">运行一步</button>
+                        <button id="reset-btn" class="btn btn-secondary">重置</button>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. Critic 更新（TD 误差）：</strong></p>
+                        <p>$$\delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$$</p>
+                        <p>$$\phi \leftarrow \phi + \alpha_c \delta_t \nabla_\phi V(s_t)$$</p>
+
+                        <p><strong>2. Actor 更新（策略梯度）：</strong></p>
+                        <p>$$\theta \leftarrow \theta + \alpha_a \delta_t \nabla_\theta \log \pi_\theta(a_t|s_t)$$</p>
+
+                        <p><strong>3. 优势函数：</strong></p>
+                        <p>$$A(s, a) = Q(s, a) - V(s)$$</p>
+                        <p>使用优势函数可以进一步减小方差：</p>
+                        <p>$$\theta \leftarrow \theta + \alpha A(s, a) \nabla_\theta \log \pi_\theta(a|s)$$</p>
+
+                        <p><strong>4. 算法优势：</strong></p>
+                        <ul>
+                            <li>Critic 提供更准确的价值估计（基线）</li>
+                            <li>减少策略梯度估计的方差</li>
+                            <li>加快收敛速度</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 Actor-Critic，理解双网络学习</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 A2C</li>
+                            <li>优势函数计算</li>
+                            <li>Critic 损失函数设计</li>
+                            <li>连续动作空间处理</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../q-learning/index.html">Q-Learning</a></li>
+                        <li><a href="../policy-gradient/index.html">策略梯度</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-5">Level 5</span>
+                    <p>双网络 · 价值估计 · 策略优化</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/actor-critic.js"></script>
+</body>
+</html>
