@@ -36,42 +36,46 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
-    min-height: 600px;
+    padding: 15px 20px;
+    min-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
 }
 
 /* Header */
 header {
     text-align: center;
-    padding: 40px 20px;
+    padding: 15px 20px;
     color: white;
 }
 
 header h1 {
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 header .subtitle {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 400;
     opacity: 0.95;
 }
 
 header .subtitle-desc {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     opacity: 0.9;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 /* 主内容区 */
 .main-content {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    gap: 30px;
-    margin-top: 30px;
+    gap: 20px;
+    margin-top: 10px;
+    flex: 1;
+    min-height: 0;
 }
 
 @media (max-width: 1024px) {
@@ -84,46 +88,54 @@ header .subtitle-desc {
 #knowledge-graph-container {
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 30px;
+    padding: 20px;
     box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .section-title {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     color: var(--text-color);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
     border-bottom: 3px solid var(--primary-color);
 }
 
 #knowledge-graph {
-    min-height: 500px;
+    flex: 1;
+    min-height: 300px;
     background: var(--bg-color);
     border-radius: 12px;
-    padding: 20px;
+    padding: 15px;
 }
 
 .hint {
     text-align: center;
     color: #6c757d;
-    font-size: 0.9rem;
-    margin-top: 15px;
+    font-size: 0.8rem;
+    margin-top: 10px;
     font-style: italic;
 }
 
-/* 快速入口卡片 - 固定高度滚动布局 */
+/* 快速入口卡片 - 自适应高度滚动布局 */
 .quick-access {
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 25px;
+    padding: 20px;
     box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 
 .card-grid-wrapper {
-    height: 280px;
+    flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
     padding-right: 8px;
+    min-height: 0;
 }
 
 .card-grid-wrapper::-webkit-scrollbar {
@@ -177,11 +189,6 @@ header .subtitle-desc {
     }
 }
 
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-}
-
 .card::before {
     content: '';
     position: absolute;
@@ -194,13 +201,12 @@ header .subtitle-desc {
 
 .card h3 {
     color: var(--primary-color);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
+    font-size: 0.9rem;
 }
 
 .card p {
-    color: #6c757d;
-    font-size: 0.95rem;
-    margin-bottom: 15px;
+    display: none;
 }
 
 /* Level 徽章 */
@@ -222,13 +228,14 @@ header .subtitle-desc {
 /* Footer */
 footer {
     text-align: center;
-    padding: 30px;
+    padding: 15px;
     color: white;
 }
 
 footer p {
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     opacity: 0.9;
+    font-size: 0.85rem;
 }
 
 footer a {
