@@ -35,7 +35,9 @@ const knowledgeData = {
                         { name: "随机森林", nameEn: "Random Forest", level: 3, url: "#", visualLevel: 2 },,
                         { name: "支持向量机", nameEn: "SVM", level: 3, url: "algorithms/svm/index.html", visualLevel: 3, highlight: true },
                         { name: "K 近邻", nameEn: "KNN", level: 3, url: "algorithms/knn/index.html", visualLevel: 1 },
-                        { name: "朴素贝叶斯", nameEn: "Naive Bayes", level: 3, url: "#", visualLevel: 2 }
+                        { name: "朴素贝叶斯", nameEn: "Naive Bayes", level: 3, url: "algorithms/naive-bayes/index.html", visualLevel: 2 },
+                        { name: "RNN", nameEn: "Recurrent NN", level: 3, url: "algorithms/rnn/index.html", visualLevel: 4 },
+                        { name: "随机森林", nameEn: "Random Forest", level: 3, url: "algorithms/random-forest/index.html", visualLevel: 3 }
                     ]
                 },
                 {
