@@ -1,4 +1,5 @@
 // MLTutor 知识图谱 - D3.js 实现
+
 // 知识树结构数据
 const knowledgeData = {
     name: "机器学习",
@@ -39,7 +40,7 @@ const knowledgeData = {
                     name: "神经网络",
                     nameEn: "Neural Networks",
                     level: 2,
-                    url: "algorithms/cnn/index.html",
+                    url: "algorithms/nn/index.html",
                     children: [
                         { name: "前馈网络", nameEn: "Feedforward", level: 3, url: "#", visualLevel: 3 },
                         { name: "CNN", nameEn: "Convolutional NN", level: 3, url: "algorithms/cnn/index.html", visualLevel: 4 },
@@ -82,7 +83,7 @@ const knowledgeData = {
             level: 1,
             children: [
                 { name: "Q-Learning", nameEn: "Q-Learning", level: 2, url: "#", visualLevel: 5 },
-                { name: "策率梯度", nameEn: "Policy Gradient", level: 2, url: "#", visualLevel: 5 },
+                { name: "策略梯度", nameEn: "Policy Gradient", level: 2, url: "#", visualLevel: 5 },
                 { name: "Actor-Critic", nameEn: "Actor-Critic", level: 2, url: "#", visualLevel: 5 }
             ]
         }
@@ -104,57 +105,59 @@ const categoryColors = {
     2: "#06b6d4"   // 二级分类
 };
 
-// 初始化知识图谱
-function initKnowledgeGraph() {
-    const container = document.getElementById('knowledge-graph');
-    if (!container) {
-        console.error('Knowledge graph container not found!');
-        return;
-    }
-    const width = container.clientWidth || 800;
-    const height = 500;
+// D3 v7 cluster layout for tree
+function cluster() {
+    const root = d3.cluster()
+        .size([300, 480])
+        .separation(d3.separationBetween(
+            (a, b) => a.name.localeCompare(b.name)
+        );
 
-    // 清空容器
-    d3.select('#knowledge-graph').selectAll('*').remove();
+    root.sum(d => {
+        const radius = 8;
+        d.radius = radius;
+        if (d.children) {
+            d.radius = radius + 5;
+        }
+    });
 
-    const svg = d3.select('#knowledge-graph')
-        .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .attr('viewBox', `0 0 ${width} ${height}`);
+    root.each(d => {
+        const radius = d.children ? 8 : 6;
+        d.radius = radius;
+    });
 
-    // 创建树布局
-    const root = d3.hierarchy().stratify()(knowledgeData);
-    const treeLayout = d3.tree().size([height - 100, width - 200]);
-    treeLayout(root);
+    return root;
+}
 
-    // 绘制连接线
-    svg.selectAll('.link')
+// 绘制连接线
+function drawLinks(svg, root) {
+    const links = svg.selectAll('.link')
         .data(root.links())
         .enter()
         .append('path')
         .attr('class', 'link')
-        .attr('d', d3.linkHorizontal()
-            .x(d => d.y + 100)
-            .y(d => d.x + 80))
+        .attr('d', d3.linkVertical(d => d.target))
         .style('fill', 'none')
         .style('stroke', '#cbd5e1')
         .style('stroke-width', '2px');
+}
 
-    // 绘制节点
+// 绘制节点
+function drawNodes(svg, root) {
     const nodes = svg.selectAll('.node')
         .data(root.descendants())
         .enter()
         .append('g')
         .attr('class', 'node')
-        .attr('transform', d => `translate(${d.y + 100},${d.x + 80})`);
+        .attr('transform', d => `translate(${d.x},${d.y})`);
 
     // 节点圆圈
     nodes.append('circle')
         .attr('r', d => {
-            if (d.depth === 0) return 20;
-            if (d.depth === 1) return 15;
-            return 10;
+            if (d.depth === 0) return 18;
+            if (d.depth === 1) return 14;
+            if (d.depth === 2) return 11;
+            return 8;
         })
         .style('fill', d => {
             if (d.data.visualLevel) return levelColors[d.data.visualLevel];
@@ -162,7 +165,7 @@ function initKnowledgeGraph() {
         })
         .style('stroke', '#fff')
         .style('stroke-width', '2px')
-        .style('cursor', d => d.data.url ? 'pointer' : 'default')
+        .style('cursor', d => d.data.url && d.data.url !== '#' ? 'pointer' : 'default')
         .style('filter', d => d.data.highlight ? 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))' : 'none')
         .on('click', function(event, d) {
             if (d.data.url && d.data.url !== '#') {
@@ -182,17 +185,58 @@ function initKnowledgeGraph() {
     nodes.append('text')
         .attr('dy', '0.35em')
         .attr('x', d => {
-            if (d.depth === 0) return 30;
-            return 18;
+            if (d.depth === 0) return 28;
+            if (d.depth === 1) return 18;
+            return 12;
         })
         .style('font-size', d => {
-            if (d.depth === 0) return '16px';
-            if (d.depth === 1) return '14px';
-            return '12px';
+            if (d.depth === 0) return '15px';
+            if (d.depth === 1) return '13px';
+            return '11px';
         })
         .style('font-weight', d => d.depth === 0 ? 'bold' : 'normal')
         .style('fill', '#1f2937')
         .text(d => d.data.name);
+}
+
+// 初始化知识图谱
+function initKnowledgeGraph() {
+    const container = document.getElementById('knowledge-graph');
+    if (!container) {
+        console.error('Knowledge graph container not found!');
+        return;
+    }
+    const width = container.clientWidth || 800;
+    const height = 500;
+
+    console.log('Initializing knowledge graph with D3 version:', d3.version);
+
+    // 清空容器
+    d3.select('#knowledge-graph').selectAll('*').remove();
+
+    const svg = d3.select('#knowledge-graph')
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .attr('viewBox', `0 0 ${width} ${height}`);
+
+    // 创建 cluster layout (D3 v7)
+    const root = d3.hierarchy(knowledgeData);
+    cluster(root);
+
+    const rootWithCoordinates = d3.tree()
+        .size([height - 60, width - 150])
+        .separation(d3.separationBetween(
+            (a, b) => a.name.localeCompare(b.name)
+        )(root);
+
+    // 绘制连接线
+    drawLinks(svg, rootWithCoordinates);
+
+    // 绘制节点
+    drawNodes(svg, rootWithCoordinates);
+
+    console.log('Knowledge graph rendered with', root.descendants().length, 'nodes');
 }
 
 // 窗口大小改变时重新绘制
@@ -203,21 +247,7 @@ window.addEventListener('resize', () => {
 });
 
 // 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', initKnowledgeGraph);
-
-// 添加交互式缩放功能
-function addZoomBehavior() {
-    const svg = d3.select('#knowledge-graph svg');
-    const g = svg.append('g');
-
-    const zoom = d3.zoom()
-        .scaleExtent([0.5, 2])
-        .on('zoom', (event) => {
-            g.attr('transform', event.transform);
-        });
-
-    svg.call(zoom);
-}
-
-// 在初始化后调用
-setTimeout(addZoomBehavior, 100);
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, waiting for D3...');
+    initKnowledgeGraph();
+});
