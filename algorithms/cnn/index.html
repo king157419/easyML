@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CNN 卷积神经网络可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">卷积神经网络 (CNN) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <!-- 算法简介 -->
+                <section class="intro-section">
+                    <h2>什么是 CNN？</h2>
+                    <div class="intro-content">
+                        <p><strong>卷积神经网络（Convolutional Neural Network, CNN）</strong> 是专门处理<strong>网格数据</strong>（如图像）的神经网络。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li><strong>卷积层（Convolution）</strong>：像一个小窗口在图像上滑动，提取特征（边缘、纹理等）</li>
+                            <li><strong>池化层（Pooling）</strong>：缩小特征图，保留重要信息，减少计算量</li>
+                            <li><strong>全连接层</strong>：最后用于分类</li>
+                        </ul>
+                        <p>想象一下：卷积就像用不同形状的"探针"在图像上寻找模式，池化就是把特征图缩小。</p>
+                    </div>
+                </section>
+
+                <!-- 可视化交互区 -->
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c757d; margin-bottom: 15px;">点击网格单元格模拟卷积操作，观察特征图如何生成</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>卷积核大小:</label>
+                            <select id="kernel-size">
+                                <option value="2">2x2</option>
+                                <option value="3" selected>3x3</option>
+                                <option value="5">5x5</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>输入图像:</label>
+                            <select id="input-image">
+                                <option value="simple">简单图案</option>
+                                <option value="edge">边缘检测</option>
+                                <option value="corner">角落检测</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="auto-btn" class="btn btn-primary">自动播放</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                        <div class="control-group">
+                            <label>当前步数:</label>
+                            <span id="step-count" class="value-display">0</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 20px;">
+                        <!-- 输入图像 -->
+                        <div style="flex: 1;">
+                            <h4 style="margin-bottom: 10px;">输入图像 (5x5)</h4>
+                            <div id="input-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; max-width: 200px;"></div>
+                        </div>
+
+                        <!-- 卷积核 -->
+                        <div style="flex: 1;">
+                            <h4 style="margin-bottom: 10px;">卷积核</h4>
+                            <div id="kernel-display" style="font-family: monospace; font-size: 24px; display: grid; place-items: center; min-height: 100px;"></div>
+                        </div>
+
+                        <!-- 输出特征图 -->
+                        <div style="flex: 1;">
+                            <h4 style="margin-bottom: 10px;">输出特征图</h4>
+                            <div id="output-grid" style="display: grid; gap: 2px; min-height: 100px;"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">计算说明：</h4>
+                        <p>卷积 = 输入区域与卷积核的<strong>逐元素相乘，然后求和</strong></p>
+                        <p id="calc-info" style="font-family: monospace; font-size: 0.9rem;">点击"单步执行"开始演示</p>
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>对于二维输入和卷积核，卷积操作定义为：</p>
+                        <p>$$Y[i,j] = \sum_{m=0}^{M-1} \sum_{n=0}^{N-1} X[i+m, j+n] \cdot K[m,n]$$</p>
+                        <p>其中：</p>
+                        <ul>
+                            <li>$Y[i,j]$ 是输出特征图在位置 $(i,j)$ 的值</li>
+                            <li>$X$ 是输入图像</li>
+                            <li>$K$ 是卷积核（filter/kernel）</li>
+                            <li>$M \times N$ 是卷积核的大小</li>
+                        </ul>
+                        <p><strong>直观理解：</strong>卷积核就像一个"特征检测器"，不同位置的权重检测不同方向的特征（如水平边缘、垂直边缘、角落等）。</p>
+                    </div>
+                </section>
+            </main>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实践 CNN，理解卷积和池化</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>PyTorch/TensorFlow 实现</li>
+                            <li>真实图像数据集（MNIST）</li>
+                            <li>可视化卷积层特征</li>
+                            <li>训练 CNN 分类器</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                        <li><a href="../svm/index.html">支持向量机 (SVM)</a></li>
+                        <li><a href="../nn/index.html">神经网络 (NN)</a></li>
+                        <li><a href="../logistic-regression/index.html">逻辑回归</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-4">Level 4</span>
+                    <p>深度学习 · 卷积操作 · 多层网络</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/cnn.js"></script>
+</body>
+</html>
