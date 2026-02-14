@@ -86,7 +86,7 @@ const knowledgeData = {
             nameEn: "Reinforcement Learning",
             level: 1,
             children: [
-                { name: "Q-Learning", nameEn: "Q-Learning", level: 2, url: "#", visualLevel: 5 },
+                { name: "Q-Learning", nameEn: "Q-Learning", level: 2, url: "algorithms/q-learning/index.html", visualLevel: 5 },
                 { name: "策略梯度", nameEn: "Policy Gradient", level: 2, url: "#", visualLevel: 5 },
                 { name: "Actor-Critic", nameEn: "Actor-Critic", level: 2, url: "#", visualLevel: 5 }
             ]

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Learning 可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .grid-world {
+            display: grid;
+            gap: 2px;
+            background: #1f2937;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .grid-cell {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: #374151;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .grid-cell.agent {
+            background: #3b82f6;
+        }
+        .grid-cell.goal {
+            background: #10b981;
+        }
+        .grid-cell.obstacle {
+            background: #ef4444;
+        }
+        .grid-cell.start {
+            background: #8b5cf6;
+        }
+        .q-values {
+            position: absolute;
+            font-size: 8px;
+            color: #9ca3af;
+        }
+        .q-up { top: 2px; }
+        .q-down { bottom: 2px; }
+        .q-left { left: 2px; }
+        .q-right { right: 2px; }
+        .agent {
+            width: 30px;
+            height: 30px;
+            background: #60a5fa;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .episode-info {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+        .episode-info span {
+            background: var(--bg-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+        .policy-viz {
+            margin-top: 20px;
+        }
+        .arrow {
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">Q-Learning 强化学习可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 Q-Learning？</h2>
+                    <div class="intro-content">
+                        <p><strong>Q-Learning</strong> 是一种<strong>无模型强化学习</strong>算法，通过学习<strong>Q 值</strong>来估计每个状态-动作对的长期回报。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>Q(s, a) 表示在状态 s 执行动作 a 的"价值"</li>
+                            <li>通过不断试错更新 Q 值</li>
+                            <li>选择 Q 值最大的动作进行决策</li>
+                        </ul>
+                        <p><strong>贝尔曼方程：</strong></p>
+                        <p>$$Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma \max_{a'} Q(s',a') - Q(s,a)]$$</p>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察智能体如何通过 Q-Learning 学习最优策略</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>学习率 (α):</label>
+                            <input type="range" id="alpha" min="0.01" max="1" step="0.01" value="0.1">
+                            <span id="alpha-value" class="value-display">0.1</span>
+                        </div>
+                        <div class="control-group">
+                            <label>折扣因子 (γ):</label>
+                            <input type="range" id="gamma" min="0.1" max="0.99" step="0.01" value="0.9">
+                            <span id="gamma-value" class="value-display">0.9</span>
+                        </div>
+                        <div class="control-group">
+                            <label>探索率 (ε):</label>
+                            <input type="range" id="epsilon" min="0" max="1" step="0.01" value="0.1">
+                            <span id="epsilon-value" class="value-display">0.1</span>
+                        </div>
+                        <div class="control-group">
+                            <label>动画速度:</label>
+                            <input type="range" id="speed" min="1" max="10" step="1" value="5">
+                            <span id="speed-value" class="value-display">5</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="run-btn" class="btn btn-primary">运行训练</button>
+                            <button id="step-btn" class="btn btn-secondary">单步执行</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                        <div>
+                            <h4>网格世界</h4>
+                            <div class="episode-info">
+                                <span>回合: <code id="episode">0</code></span>
+                                <span>步数: <code id="step">0</code></span>
+                                <span>总奖励: <code id="total-reward">0</code></span>
+                            </div>
+                            <div id="grid-world" class="grid-world"></div>
+                            <div style="margin-top: 10px; font-size: 12px; color: #9ca3af;">
+                                <span style="color: #3b82f6;">● 智能体</span>
+                                <span style="color: #10b981;">★ 目标</span>
+                                <span style="color: #ef4444;">■ 障碍</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4>Q 值热力图</h4>
+                            <div id="q-heatmap"></div>
+                        </div>
+                    </div>
+
+                    <div class="policy-viz">
+                        <h4>学习曲线</h4>
+                        <div id="learning-curve" style="height: 200px;"></div>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. Q 值更新：</strong></p>
+                        <p>$$Q(s,a) \leftarrow Q(s,a) + \alpha [r + \gamma \max_{a'} Q(s',a') - Q(s,a)]$$</p>
+                        <ul>
+                            <li>$s$: 当前状态</li>
+                            <li>$a$: 执行的动作</li>
+                            <li>$r$: 获得的即时奖励</li>
+                            <li>$s'$: 转移后的新状态</li>
+                            <li>$\alpha$: 学习率，控制更新幅度</li>
+                            <li>$\gamma$: 折扣因子，控制未来奖励的重要性</li>
+                        </ul>
+
+                        <p><strong>2. ε-贪婪策略：</strong></p>
+                        <ul>
+                            <li>以概率 $1-\epsilon$ 选择 Q 值最大的动作（利用）</li>
+                            <li>以概率 $\epsilon$ 随机选择动作（探索）</li>
+                        </ul>
+
+                        <p><strong>3. 收敛条件：</strong></p>
+                        <ul>
+                            <li>每个状态-动作对被无限次访问</li>
+                            <li>学习率 $\alpha$ 足够小并逐渐减小</li>
+                            <li>折扣因子 $\gamma < 1$</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 Q-Learning，理解强化学习</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 Q-Learning</li>
+                            <li>自定义环境开发</li>
+                            <li>经验回放缓冲区</li>
+                            <li>深度 Q 网络 (DQN)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="#">策略梯度</a></li>
+                        <li><a href="#">Actor-Critic</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-5">Level 5</span>
+                    <p>强化学习 · 价值估计 · 探索利用</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/q-learning.js"></script>
+</body>
+</html>
