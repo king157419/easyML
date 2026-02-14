@@ -1,55 +1,44 @@
-// MLTutor 知识图谱 - D3.js 实现
+// MLTutor 知识图谱 - D3.js 力导向图实现
 
 // 知识树结构数据
 const knowledgeData = {
     name: "机器学习",
     nameEn: "Machine Learning",
-    level: 0,
     children: [
         {
             name: "监督学习",
             nameEn: "Supervised Learning",
-            level: 1,
             children: [
                 {
                     name: "回归",
                     nameEn: "Regression",
-                    level: 2,
-                    url: "algorithms/linear-regression/index.html",
                     children: [
-                        { name: "线性回归", nameEn: "Linear Regression", level: 3, url: "algorithms/linear-regression/index.html", visualLevel: 1 },
-                        { name: "多项式回归", nameEn: "Polynomial Regression", level: 3, url: "algorithms/polynomial-regression/index.html", visualLevel: 1 },
-                        { name: "Ridge 回归", nameEn: "Ridge Regression", level: 3, url: "algorithms/ridge-regression/index.html", visualLevel: 2 },
-                        { name: "Lasso 回归", nameEn: "Lasso Regression", level: 3, url: "algorithms/lasso-regression/index.html", visualLevel: 2 }
+                        { name: "线性回归", url: "algorithms/linear-regression/index.html", visualLevel: 1 },
+                        { name: "多项式回归", url: "algorithms/polynomial-regression/index.html", visualLevel: 1 },
+                        { name: "Ridge", url: "algorithms/ridge-regression/index.html", visualLevel: 2 },
+                        { name: "Lasso", url: "algorithms/lasso-regression/index.html", visualLevel: 2 }
                     ]
                 },
                 {
                     name: "分类",
                     nameEn: "Classification",
-                    level: 2,
                     children: [
-                        { name: "逻辑回归", nameEn: "Logistic Regression", level: 3, url: "algorithms/logistic-regression/index.html", visualLevel: 1 },
-                        { name: "决策树", nameEn: "Decision Tree", level: 3, url: "algorithms/decision-tree/index.html", visualLevel: 2 },
-                        { name: "K-Means", nameEn: "K-Means", level: 3, url: "algorithms/k-means/index.html", visualLevel: 1 },
-                        { name: "PCA", nameEn: "PCA", level: 3, url: "algorithms/pca/index.html", visualLevel: 2 },
-                        { name: "随机森林", nameEn: "Random Forest", level: 3, url: "algorithms/random-forest/index.html", visualLevel: 2 },
-                        { name: "支持向量机", nameEn: "SVM", level: 3, url: "algorithms/svm/index.html", visualLevel: 3, highlight: true },
-                        { name: "K 近邻", nameEn: "KNN", level: 3, url: "algorithms/knn/index.html", visualLevel: 1 },
-                        { name: "朴素贝叶斯", nameEn: "Naive Bayes", level: 3, url: "algorithms/naive-bayes/index.html", visualLevel: 2 },
-                        { name: "RNN", nameEn: "Recurrent NN", level: 3, url: "algorithms/rnn/index.html", visualLevel: 4 },
-                        { name: "随机森林", nameEn: "Random Forest", level: 3, url: "algorithms/random-forest/index.html", visualLevel: 3 }
+                        { name: "逻辑回归", url: "algorithms/logistic-regression/index.html", visualLevel: 1 },
+                        { name: "SVM", url: "algorithms/svm/index.html", visualLevel: 3, highlight: true },
+                        { name: "KNN", url: "algorithms/knn/index.html", visualLevel: 1 },
+                        { name: "决策树", url: "algorithms/decision-tree/index.html", visualLevel: 2 },
+                        { name: "随机森林", url: "algorithms/random-forest/index.html", visualLevel: 3 },
+                        { name: "朴素贝叶斯", url: "algorithms/naive-bayes/index.html", visualLevel: 2 }
                     ]
                 },
                 {
                     name: "神经网络",
                     nameEn: "Neural Networks",
-                    level: 2,
-                    url: "algorithms/nn/index.html",
                     children: [
-                        { name: "前馈网络", nameEn: "Feedforward", level: 3, url: "algorithms/nn/index.html", visualLevel: 3 },
-                        { name: "CNN", nameEn: "Convolutional NN", level: 3, url: "algorithms/cnn/index.html", visualLevel: 4 },
-                        { name: "RNN", nameEn: "Recurrent NN", level: 3, url: "algorithms/rnn/index.html", visualLevel: 4 },
-                        { name: "注意力机制", nameEn: "Attention", level: 3, url: "algorithms/attention/index.html", visualLevel: 4 }
+                        { name: "前馈网络", url: "algorithms/nn/index.html", visualLevel: 3 },
+                        { name: "CNN", url: "algorithms/cnn/index.html", visualLevel: 4 },
+                        { name: "RNN", url: "algorithms/rnn/index.html", visualLevel: 4 },
+                        { name: "Attention", url: "algorithms/attention/index.html", visualLevel: 4 }
                     ]
                 }
             ]
@@ -57,26 +46,23 @@ const knowledgeData = {
         {
             name: "无监督学习",
             nameEn: "Unsupervised Learning",
-            level: 1,
             children: [
                 {
                     name: "聚类",
                     nameEn: "Clustering",
-                    level: 2,
                     children: [
-                        { name: "K-Means", nameEn: "K-Means", level: 3, url: "algorithms/k-means/index.html", visualLevel: 1 },
-                        { name: "DBSCAN", nameEn: "DBSCAN", level: 3, url: "algorithms/dbscan/index.html", visualLevel: 2 },
-                        { name: "层次聚类", nameEn: "Hierarchical", level: 3, url: "algorithms/hierarchical-clustering/index.html", visualLevel: 2 }
+                        { name: "K-Means", url: "algorithms/k-means/index.html", visualLevel: 1 },
+                        { name: "DBSCAN", url: "algorithms/dbscan/index.html", visualLevel: 2 },
+                        { name: "层次聚类", url: "algorithms/hierarchical-clustering/index.html", visualLevel: 2 }
                     ]
                 },
                 {
                     name: "降维",
-                    nameEn: "Dimensionality Reduction",
-                    level: 2,
+                    nameEn: "Dim Reduction",
                     children: [
-                        { name: "PCA", nameEn: "PCA", level: 3, url: "algorithms/pca/index.html", visualLevel: 2 },
-                        { name: "t-SNE", nameEn: "t-SNE", level: 3, url: "algorithms/tsne/index.html", visualLevel: 2 },
-                        { name: "LDA", nameEn: "LDA", level: 3, url: "algorithms/lda/index.html", visualLevel: 2 },
+                        { name: "PCA", url: "algorithms/pca/index.html", visualLevel: 2 },
+                        { name: "t-SNE", url: "algorithms/tsne/index.html", visualLevel: 2 },
+                        { name: "LDA", url: "algorithms/lda/index.html", visualLevel: 2 }
                     ]
                 }
             ]
@@ -84,204 +70,193 @@ const knowledgeData = {
         {
             name: "强化学习",
             nameEn: "Reinforcement Learning",
-            level: 1,
             children: [
-                { name: "Q-Learning", nameEn: "Q-Learning", level: 2, url: "algorithms/q-learning/index.html", visualLevel: 5 },
-                { name: "策略梯度", nameEn: "Policy Gradient", level: 2, url: "algorithms/policy-gradient/index.html", visualLevel: 5 },
-                { name: "Actor-Critic", nameEn: "Actor-Critic", level: 2, url: "algorithms/actor-critic/index.html", visualLevel: 5 }
+                { name: "Q-Learning", url: "algorithms/q-learning/index.html", visualLevel: 5 },
+                { name: "策略梯度", url: "algorithms/policy-gradient/index.html", visualLevel: 5 },
+                { name: "Actor-Critic", url: "algorithms/actor-critic/index.html", visualLevel: 5 }
             ]
         }
     ]
 };
 
-// 颜色映射（按可视化等级）
+// 颜色映射
 const levelColors = {
-    1: "#10b981",  // 绿色 - 直观可画
-    2: "#3b82f6",  // 蓝色 - 决策结构
-    3: "#f59e0b",  // 橙色 - 交互式理解
-    4: "#ef4444",  // 红色 - 深度学习
-    5: "#8b5cf6"   // 紫色 - 概念隐喻
+    1: "#10b981",
+    2: "#3b82f6",
+    3: "#f59e0b",
+    4: "#ef4444",
+    5: "#8b5cf6"
 };
 
-const categoryColors = {
-    0: "#2563eb",  // 根节点
-    1: "#7c3aed",  // 一级分类
-    2: "#06b6d4"   // 二级分类
+const depthColors = {
+    0: "#1e40af",
+    1: "#7c3aed",
+    2: "#0891b2",
+    3: "#059669"
 };
 
-// D3 v7 cluster layout helper
-function buildHierarchy(root) {
-    // 给每个节点添加 depth 属性
-    function assignDepth(node, depth) {
-        node.depth = depth;
-        if (node.children) {
-            node.children.forEach(child => assignDepth(child, depth + 1));
-        }
-    }
-
-    assignDepth(root, 0);
-
-    // 计算每个节点的位置
-    const levels = {};
-
-    function calculatePositions(node) {
-        const depth = node.depth;
-        if (!levels[depth]) levels[depth] = [];
-        levels[depth].push(node);
-
-        if (node.children) {
-            node.children.forEach(child => calculatePositions(child));
-        }
-    }
-
-    calculatePositions(root);
-
-    // 设置 X, Y 坐标
-    const levelHeight = 70;
-    const nodeSpacing = 60;
-
-    Object.keys(levels).forEach(depth => {
-        const count = levels[depth].length;
-        const totalWidth = count * nodeSpacing;
-        const startX = -(totalWidth / 2) + (nodeSpacing / 2);
-
-        levels[depth].forEach((node, i) => {
-            node.x = startX + i * nodeSpacing;
-            node.y = depth * levelHeight;
-        });
-    });
-
-    return root;
-}
-
-// 绘制连接线
-function drawLinks(svg, root) {
-    svg.selectAll('.link').remove();
-
-    const links = [];
-    function collectLinks(node) {
-        if (node.children) {
-            node.children.forEach(child => {
-                links.push({ source: node, target: child });
-                collectLinks(child);
-            });
-        }
-    }
-
-    collectLinks(root);
-
-    svg.selectAll('.link')
-        .data(links)
-        .enter()
-        .append('path')
-        .attr('class', 'link')
-        .attr('d', d => {
-            return `M${d.source.x},${d.source.y}L${(d.source.x + d.target.x) / 2},${(d.source.y + d.target.y) / 2}`;
-        })
-        .style('fill', 'none')
-        .style('stroke', '#cbd5e1')
-        .style('stroke-width', '2px');
-}
-
-// 绘制节点
-function drawNodes(svg, root) {
-    svg.selectAll('.node').remove();
-    svg.selectAll('.node circle').remove();
-    svg.selectAll('.node text').remove();
-
-    const nodes = root.descendants();
-
-    svg.selectAll('.node')
-        .data(nodes)
-        .enter()
-        .append('g')
-        .attr('class', 'node')
-        .attr('transform', d => `translate(${d.x},${d.y})`);
-
-    // 节点圆圈
-    svg.selectAll('.node')
-        .append('circle')
-        .attr('r', d => {
-            if (d.depth === 0) return 18;
-            if (d.depth === 1) return 14;
-            if (d.depth === 2) return 11;
-            return 8;
-        })
-        .style('fill', d => {
-            if (d.data.visualLevel) return levelColors[d.data.visualLevel];
-            return categoryColors[d.depth];
-        })
-        .style('stroke', '#fff')
-        .style('stroke-width', '2px')
-        .style('cursor', d => d.data.url && d.data.url !== '#' ? 'pointer' : 'default')
-        .style('filter', d => d.data.highlight ? 'drop-shadow(0 0 8px rgba(245, 158, 11, 0.6))' : 'none')
-        .on('click', function(event, d) {
-            if (d.data.url && d.data.url !== '#') {
-                window.location.href = d.data.url;
-            }
-        })
-        .on('mouseover', function(event, d) {
-            if (d.data.url && d.data.url !== '#') {
-                d3.select(this).style('opacity', '0.7');
-            }
-        })
-        .on('mouseout', function(event, d) {
-            d3.select(this).style('opacity', '1');
-        });
-
-    // 节点标签
-    svg.selectAll('.node')
-        .append('text')
-        .attr('dy', '0.35em')
-        .attr('x', d => {
-            if (d.depth === 0) return 28;
-            if (d.depth === 1) return 18;
-            return 12;
-        })
-        .style('font-size', d => {
-            if (d.depth === 0) return '15px';
-            if (d.depth === 1) return '13px';
-            return '11px';
-        })
-        .style('font-weight', d => d.depth === 0 ? 'bold' : 'normal')
-        .style('fill', '#1f2937')
-        .text(d => d.data.name);
-}
+// 全局变量
+let simulation, svg, g, link, node;
+let currentTransform = d3.zoomIdentity;
 
 // 初始化知识图谱
 function initKnowledgeGraph() {
-    const container = document.getElementById('knowledge-graph-container');
+    const container = document.getElementById('knowledge-graph');
     if (!container) {
         console.error('Knowledge graph container not found!');
         return;
     }
 
-    const width = Math.max(800, container.clientWidth - 40);
+    const width = container.clientWidth;
     const height = 600;
 
-    console.log('Initializing knowledge graph with D3 version:', d3.version);
+    console.log('Initializing force-directed knowledge graph...');
 
     // 清空容器
-    d3.select('#knowledge-graph-container').selectAll('*').remove();
+    d3.select('#knowledge-graph').selectAll('*').remove();
 
     // 创建 SVG
-    const svg = d3.select('#knowledge-graph-container')
+    svg = d3.select('#knowledge-graph')
         .append('svg')
         .attr('width', width)
         .attr('height', height)
-        .attr('viewBox', `0 0 ${width} ${height}`);
+        .attr('viewBox', [0, 0, width, height]);
 
-    // 构建层次结构并计算坐标
+    // 添加缩放功能
+    const zoom = d3.zoom()
+        .scaleExtent([0.3, 3])
+        .on('zoom', (event) => {
+            g.attr('transform', event.transform);
+            currentTransform = event.transform;
+        });
+
+    svg.call(zoom);
+
+    // 创建主组
+    g = svg.append('g');
+
+    // 将层级数据转换为节点和边数组
     const root = d3.hierarchy(knowledgeData);
-    const layoutRoot = buildHierarchy(root);
+    const nodes = root.descendants();
+    const links = root.links();
+
+    // 为节点分配初始位置（径向布局）
+    const radius = Math.min(width, height) / 2 - 80;
+    nodes.forEach((d, i) => {
+        const angle = (i / nodes.length) * 2 * Math.PI;
+        const r = d.depth === 0 ? 0 : (d.depth === 1 ? radius * 0.3 : (d.depth === 2 ? radius * 0.55 : radius * 0.85));
+        d.x = width / 2 + r * Math.cos(angle - Math.PI / 2);
+        d.y = height / 2 + r * Math.sin(angle - Math.PI / 2);
+    });
+
+    // 创建力模拟
+    simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(links)
+            .id(d => d.id)
+            .distance(d => 60 + d.source.depth * 20)
+            .strength(0.8))
+        .force('charge', d3.forceManyBody()
+            .strength(-200)
+            .distanceMax(300))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + 10))
+        .force('radial', d3.forceRadial(d => d.depth * 100, width / 2, height / 2).strength(0.3));
 
     // 绘制连接线
-    drawLinks(svg, layoutRoot);
+    link = g.append('g')
+        .selectAll('line')
+        .data(links)
+        .join('line')
+        .attr('class', 'link')
+        .style('stroke', '#cbd5e1')
+        .style('stroke-width', 1.5)
+        .style('stroke-opacity', 0.6);
 
     // 绘制节点
-    drawNodes(svg, layoutRoot);
+    node = g.append('g')
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'node')
+        .style('cursor', d => d.data.url ? 'pointer' : 'grab')
+        .call(d3.drag()
+            .on('start', dragStarted)
+            .on('drag', dragged)
+            .on('end', dragEnded));
 
-    console.log('Knowledge graph rendered with', root.descendants().length, 'nodes');
+    // 节点圆形
+    node.append('circle')
+        .attr('r', d => getNodeRadius(d))
+        .style('fill', d => d.data.visualLevel ? levelColors[d.data.visualLevel] : depthColors[d.depth])
+        .style('stroke', '#fff')
+        .style('stroke-width', 2)
+        .style('filter', d => d.data.highlight ? 'drop-shadow(0 0 10px rgba(245, 158, 11, 0.8))' : 'none')
+        .on('click', function(event, d) {
+            if (d.data.url) {
+                window.location.href = d.data.url;
+            }
+        })
+        .on('mouseover', function(event, d) {
+            if (d.data.url) {
+                d3.select(this)
+                    .transition()
+                    .duration(150)
+                    .attr('r', getNodeRadius(d) + 4);
+            }
+        })
+        .on('mouseout', function(event, d) {
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr('r', getNodeRadius(d));
+        });
+
+    // 节点标签
+    node.append('text')
+        .text(d => d.data.name)
+        .attr('dy', '0.35em')
+        .attr('x', d => getNodeRadius(d) + 6)
+        .style('font-size', d => d.depth === 0 ? '14px' : (d.depth === 1 ? '12px' : '11px'))
+        .style('font-weight', d => d.depth === 0 ? 'bold' : 'normal')
+        .style('fill', '#1f2937')
+        .style('pointer-events', 'none');
+
+    // 更新位置
+    simulation.on('tick', () => {
+        link
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    console.log('Knowledge graph rendered with', nodes.length, 'nodes');
+}
+
+function getNodeRadius(d) {
+    if (d.depth === 0) return 20;
+    if (d.depth === 1) return 16;
+    if (d.depth === 2) return 12;
+    return 10;
+}
+
+function dragStarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+}
+
+function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+}
+
+function dragEnded(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
 }
 
 // 窗口大小改变时重新绘制

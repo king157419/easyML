@@ -11,6 +11,33 @@
 </head>
 <body>
 <script>
+// KaTeX 自动渲染函数
+function renderKaTeX() {
+    if (typeof katex !== 'undefined') {
+        // 渲染页面中的所有数学公式
+        document.querySelectorAll('.math-content, .katex-display').forEach(el => {
+            let tex = el.textContent || el.innerText;
+            if (tex && tex.trim()) {
+                // 去掉 $$ 或 $ 分隔符
+                tex = tex.trim();
+                if (tex.startsWith('$$') && tex.endsWith('$$')) {
+                    tex = tex.slice(2, -2).trim();
+                } else if (tex.startsWith('$') && tex.endsWith('$')) {
+                    tex = tex.slice(1, -1).trim();
+                }
+                try {
+                    katex.render(tex, el, {
+                        throwOnError: false,
+                        displayMode: el.classList.contains('katex-display')
+                    });
+                } catch (e) {
+                    console.error('KaTeX render error:', e);
+                }
+            }
+        });
+    }
+}
+
 // 确保 D3 加载完成后再初始化
 window.addEventListener('load', function() {
     console.log('Page loaded, D3 version:', d3.version);
@@ -19,6 +46,8 @@ window.addEventListener('load', function() {
     } else {
         console.error('initKnowledgeGraph not found');
     }
+    // 渲染 KaTeX
+    renderKaTeX();
 });
 </script>
     <div class="container">
@@ -38,122 +67,101 @@ window.addEventListener('load', function() {
             <!-- 快速入口 -->
             <div class="quick-access">
                 <h2 class="section-title">快速入口</h2>
-                <div class="card-grid">
-                    <a href="algorithms/linear-regression/index.html" class="card">
-                        <h3>线性回归</h3>
-                        <p>拟合数据的直线/平面</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/logistic-regression/index.html" class="card">
-                        <h3>逻辑回归</h3>
-                        <p>分类问题的决策边界</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/svm/index.html" class="card">
-                        <h3>支持向量机 (SVM)</h3>
-                        <p>交互式参数探索 · 重点难点</p>
-                        <span class="level-badge level-3">Level 3</span>
-                    </a>
-                    <a href="algorithms/knn/index.html" class="card">
-                        <h3>K近邻 (KNN)</h3>
-                        <p>直观的分类算法 · 距离度量</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/cnn/index.html" class="card">
-                        <h3>卷积神经网络 (CNN)</h3>
-                        <p>图像识别 · 卷积可视化</p>
-                        <span class="level-badge level-4">Level 4</span>
-                    </a>
-                    <a href="algorithms/knn/index.html" class="card">
-                        <h3>K 近邻 (KNN)</h3>
-                        <p>基于距离的投票分类</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/k-means/index.html" class="card">
-                        <h3>K-Means 聚类</h3>
-                        <p>迭代优化聚类中心</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/decision-tree/index.html" class="card">
-                        <h3>决策树</h3>
-                        <p>基于信息增益的分层决策</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/random-forest/index.html" class="card">
-                        <h3>随机森林</h3>
-                        <p>多树集成的投票机制</p>
-                        <span class="level-badge level-3">Level 3</span>
-                    </a>
-                    <a href="algorithms/naive-bayes/index.html" class="card">
-                        <h3>朴素贝叶斯</h3>
-                        <p>贝叶斯定理的概率分类</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/pca/index.html" class="card">
-                        <h3>PCA 降维</h3>
-                        <p>主成分分析降维</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/dbscan/index.html" class="card">
-                        <h3>DBSCAN 聚类</h3>
-                        <p>基于密度的噪声检测</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/ridge-regression/index.html" class="card">
-                        <h3>Ridge 回归</h3>
-                        <p>L2 正则化收缩权重</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/lasso-regression/index.html" class="card">
-                        <h3>Lasso 回归</h3>
-                        <p>L1 正则化特征选择</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/polynomial-regression/index.html" class="card">
-                        <h3>多项式回归</h3>
-                        <p>非线性多项式拟合</p>
-                        <span class="level-badge level-1">Level 1</span>
-                    </a>
-                    <a href="algorithms/hierarchical-clustering/index.html" class="card">
-                        <h3>层次聚类</h3>
-                        <p>树状层次结构聚类</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/lda/index.html" class="card">
-                        <h3>LDA 线性判别分析</h3>
-                        <p>有监督的投影降维</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/tsne/index.html" class="card">
-                        <h3>t-SNE 降维</h3>
-                        <p>流形学习非线性降维</p>
-                        <span class="level-badge level-2">Level 2</span>
-                    </a>
-                    <a href="algorithms/rnn/index.html" class="card">
-                        <h3>RNN 循环神经网络</h3>
-                        <p>序列数据的时间建模</p>
-                        <span class="level-badge level-4">Level 4</span>
-                    </a>
-                    <a href="algorithms/attention/index.html" class="card">
-                        <h3>Attention 注意力机制</h3>
-                        <p>Transformer 核心组件</p>
-                        <span class="level-badge level-4">Level 4</span>
-                    </a>
-                    <a href="algorithms/q-learning/index.html" class="card">
-                        <h3>Q-Learning 强化学习</h3>
-                        <p>基于价值迭代的学习</p>
-                        <span class="level-badge level-5">Level 5</span>
-                    </a>
-                    <a href="algorithms/policy-gradient/index.html" class="card">
-                        <h3>策略梯度</h3>
-                        <p>直接优化策略参数</p>
-                        <span class="level-badge level-5">Level 5</span>
-                    </a>
-                    <a href="algorithms/actor-critic/index.html" class="card">
-                        <h3>Actor-Critic</h3>
-                        <p>双网络协同学习</p>
-                        <span class="level-badge level-5">Level 5</span>
-                    </a>
+                <div class="card-grid-wrapper">
+                    <div class="card-grid">
+                        <a href="algorithms/linear-regression/index.html" class="card">
+                            <h3>线性回归</h3>
+                            <span class="level-badge level-1">Lv1</span>
+                        </a>
+                        <a href="algorithms/logistic-regression/index.html" class="card">
+                            <h3>逻辑回归</h3>
+                            <span class="level-badge level-1">Lv1</span>
+                        </a>
+                        <a href="algorithms/svm/index.html" class="card">
+                            <h3>支持向量机</h3>
+                            <span class="level-badge level-3">Lv3</span>
+                        </a>
+                        <a href="algorithms/knn/index.html" class="card">
+                            <h3>K 近邻</h3>
+                            <span class="level-badge level-1">Lv1</span>
+                        </a>
+                        <a href="algorithms/k-means/index.html" class="card">
+                            <h3>K-Means</h3>
+                            <span class="level-badge level-1">Lv1</span>
+                        </a>
+                        <a href="algorithms/decision-tree/index.html" class="card">
+                            <h3>决策树</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/nn/index.html" class="card">
+                            <h3>神经网络</h3>
+                            <span class="level-badge level-4">Lv4</span>
+                        </a>
+                        <a href="algorithms/cnn/index.html" class="card">
+                            <h3>CNN</h3>
+                            <span class="level-badge level-4">Lv4</span>
+                        </a>
+                        <a href="algorithms/rnn/index.html" class="card">
+                            <h3>RNN</h3>
+                            <span class="level-badge level-4">Lv4</span>
+                        </a>
+                        <a href="algorithms/attention/index.html" class="card">
+                            <h3>注意力机制</h3>
+                            <span class="level-badge level-4">Lv4</span>
+                        </a>
+                        <a href="algorithms/random-forest/index.html" class="card">
+                            <h3>随机森林</h3>
+                            <span class="level-badge level-3">Lv3</span>
+                        </a>
+                        <a href="algorithms/naive-bayes/index.html" class="card">
+                            <h3>朴素贝叶斯</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/pca/index.html" class="card">
+                            <h3>PCA</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/dbscan/index.html" class="card">
+                            <h3>DBSCAN</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/tsne/index.html" class="card">
+                            <h3>t-SNE</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/lda/index.html" class="card">
+                            <h3>LDA</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/ridge-regression/index.html" class="card">
+                            <h3>Ridge 回归</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/lasso-regression/index.html" class="card">
+                            <h3>Lasso 回归</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/polynomial-regression/index.html" class="card">
+                            <h3>多项式回归</h3>
+                            <span class="level-badge level-1">Lv1</span>
+                        </a>
+                        <a href="algorithms/hierarchical-clustering/index.html" class="card">
+                            <h3>层次聚类</h3>
+                            <span class="level-badge level-2">Lv2</span>
+                        </a>
+                        <a href="algorithms/q-learning/index.html" class="card">
+                            <h3>Q-Learning</h3>
+                            <span class="level-badge level-5">Lv5</span>
+                        </a>
+                        <a href="algorithms/policy-gradient/index.html" class="card">
+                            <h3>策略梯度</h3>
+                            <span class="level-badge level-5">Lv5</span>
+                        </a>
+                        <a href="algorithms/actor-critic/index.html" class="card">
+                            <h3>Actor-Critic</h3>
+                            <span class="level-badge level-5">Lv5</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
