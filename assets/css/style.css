@@ -111,11 +111,12 @@ header .subtitle-desc {
     font-style: italic;
 }
 
-/* 快速入口卡片 */
+/* 快速入口卡片 - 单栏布局 */
 .card-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    justify-content: flex-start;
 }
 
 .card {
