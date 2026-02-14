@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注意力机制可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .attention-viz {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            padding: 20px;
+            min-height: 300px;
+        }
+        .token-box {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 300px;
+        }
+        .token {
+            padding: 8px 16px;
+            background: #374151;
+            border-radius: 6px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .token:hover {
+            border-color: #3b82f6;
+        }
+        .token.source {
+            background: #3b82f6;
+        }
+        .token.target {
+            background: #10b981;
+        }
+        .attention-line {
+            stroke: #f59e0b;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .attention-line.active {
+            opacity: 1;
+        }
+        .attention-weight {
+            position: absolute;
+            background: #1f2937;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .matrix-cell {
+            transition: all 0.3s;
+        }
+        .position-viz {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .embeddings {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .embedding-bar {
+            height: 8px;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">注意力机制可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是注意力机制？</h2>
+                    <div class="intro-content">
+                        <p><strong>注意力机制（Attention Mechanism）</strong> 是一种让神经网络专注于输入重要部分的技术。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>就像阅读时重点关注某些词一样</li>
+                            <li>给每个输入分配不同的"权重"</li>
+                            <li>权重越大，表示越"关注"</li>
+                        </ul>
+                        <p><strong>为什么需要注意力？</strong></p>
+                        <ul>
+                            <li>RNN/LSTM 处理长序列时信息丢失</li>
+                            <li>并行计算（如 Transformer）需要全局信息</li>
+                            <li>提高模型可解释性</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">点击查询词，观察其与所有键词的注意力权重</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>示例句子:</label>
+                            <select id="sentence-select">
+                                <option value="translation">机器翻译 (中→英)</option>
+                                <option value="sentiment">情感分析</option>
+                                <option value="summary">文本摘要</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>注意力类型:</label>
+                            <select id="attention-type">
+                                <option value="additive">Additive (Bahdanau)</option>
+                                <option value="dot">Dot Product</option>
+                                <option value="scaled">Scaled Dot-Product</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>温度 (T):</label>
+                            <input type="range" id="temperature" min="0.1" max="2" step="0.1" value="1">
+                            <span id="temperature-value" class="value-display">1</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div id="attention-viz" class="attention-viz"></div>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <h4>注意力权重矩阵</h4>
+                        <div id="attention-matrix"></div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">查询(Query)、键(Key)、值(Value) 概念：</h4>
+                        <div style="display: flex; gap: 30px; font-size: 14px;">
+                            <div>
+                                <strong style="color: #3b82f6;">Query (查询):</strong> 我正在寻找什么？
+                            </div>
+                            <div>
+                                <strong style="color: #10b981;">Key (键):</strong> 我能提供什么？
+                            </div>
+                            <div>
+                                <strong style="color: #f59e0b;">Value (值):</strong> 实际内容是什么？
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 缩放点积注意力（Scaled Dot-Product Attention）：</strong></p>
+                        <p>$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$</p>
+                        <ul>
+                            <li>$Q \in \mathbb{R}^{n \times d_k}$: 查询矩阵</li>
+                            <li>$K \in \mathbb{R}^{n \times d_k}$: 键矩阵</li>
+                            <li>$V \in \mathbb{R}^{n \times d_v}$: 值矩阵</li>
+                            <li>$d_k$: 键向量的维度</li>
+                        </ul>
+
+                        <p><strong>2. 计算步骤：</strong></p>
+                        <ol>
+                            <li>计算注意力分数：$\text{scores} = QK^T$</li>
+                            <li>缩放：$\text{scaled} = \text{scores} / \sqrt{d_k}$</li>
+                            <li>Softmax 归一化：$\text{weights} = \text{softmax}(\text{scaled})$</li>
+                            <li>加权求和：$\text{output} = \text{weights} \times V$</li>
+                        </ol>
+
+                        <p><strong>3. 多头注意力：</strong></p>
+                        <p>$$\text{MultiHead}(Q, K, V) = \text{Concat}(\text{head}_1, ..., \text{head}_h)W^O$$</p>
+                        <p>使用多组 Q、K、V 并行计算，捕捉不同的注意力模式。</p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现注意力机制，理解 Transformer 基础</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 Self-Attention</li>
+                            <li>Multi-Head Attention</li>
+                            <li>位置编码</li>
+                            <li>构建小型 Transformer</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../rnn/index.html">RNN 循环神经网络</a></li>
+                        <li><a href="../cnn/index.html">CNN 卷积神经网络</a></li>
+                        <li><a href="../nn/index.html">神经网络</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-4">Level 4</span>
+                    <p>注意力 · 权重可视化 · Transformer 基础</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/attention.js"></script>
+</body>
+</html>
