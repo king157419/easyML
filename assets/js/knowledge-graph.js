@@ -46,7 +46,7 @@ const knowledgeData = {
                     level: 2,
                     url: "algorithms/nn/index.html",
                     children: [
-                        { name: "前馈网络", nameEn: "Feedforward", level: 3, url: "#", visualLevel: 3 },
+                        { name: "前馈网络", nameEn: "Feedforward", level: 3, url: "algorithms/nn/index.html", visualLevel: 3 },
                         { name: "CNN", nameEn: "Convolutional NN", level: 3, url: "algorithms/cnn/index.html", visualLevel: 4 },
                         { name: "RNN", nameEn: "Recurrent NN", level: 3, url: "algorithms/rnn/index.html", visualLevel: 4 },
                         { name: "注意力机制", nameEn: "Attention", level: 3, url: "algorithms/attention/index.html", visualLevel: 4 }
