@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>逻辑回归可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">逻辑回归 (Logistic Regression) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是逻辑回归？</h2>
+                    <div class="intro-content">
+                        <p>逻辑回归是用于<strong>二分类问题</strong>的经典算法。尽管名字里有"回归"，但它实际上是一个分类算法。</p>
+                        <p><strong>核心区别</strong>：线性回归预测连续值（如房价），逻辑回归预测<strong>概率</strong>（如是不是垃圾邮件）。</p>
+                        <p><strong>核心直觉</strong>：通过 Sigmoid 函数将线性输出压缩到 [0, 1] 区间，表示属于正类的概率。</p>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c757d; margin-bottom: 15px;">观察决策边界如何将两类数据分开</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>权重 w₁:</label>
+                            <input type="range" id="w1-slider" min="-5" max="5" step="0.1" value="1">
+                            <span id="w1-value" class="value-display">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>权重 w₂:</label>
+                            <input type="range" id="w2-slider" min="-5" max="5" step="0.1" value="1">
+                            <span id="w2-value" class="value-display">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>偏置 b:</label>
+                            <input type="range" id="b-slider" min="-5" max="5" step="0.1" value="0">
+                            <span id="b-value" class="value-display">0.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据分离度:</label>
+                            <input type="range" id="separation-slider" min="0.5" max="3" step="0.1" value="1.5">
+                            <span id="separation-value" class="value-display">1.5</span>
+                        </div>
+                        <div class="control-group" style="margin-left: auto;">
+                            <button id="generate-btn" class="btn btn-primary" style="padding: 8px 16px;">生成新数据</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container">
+                        <!-- D3.js 可视化将在这里渲染 -->
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">决策函数：</h4>
+                        <p style="font-family: monospace; font-size: 1.1rem;">
+                            z = <span id="w1-display">1.0</span>·x₁ + <span id="w2-display">1.0</span>·x₂ + <span id="b-display">0.0</span>
+                        </p>
+                        <p style="font-size: 0.9rem; color: #6c757d;">
+                            💡 提示：决策边界是 w₁x₁ + w₂x₂ + b = 0 的直线。调整参数观察边界如何移动！
+                        </p>
+                        <p>
+                            <span style="display: inline-block; width: 12px; height: 12px; background: #2563eb; border-radius: 50%;"></span>
+                            类别 0 概率 &gt; 0.5
+                            <span style="display: inline-block; width: 12px; height: 12px; background: #ef4444; border-radius: 50%; margin-left: 15px;"></span>
+                            类别 1 概率 &gt; 0.5
+                        </p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>逻辑回归使用 <strong>Sigmoid 函数</strong>将线性输出映射到概率：</p>
+                        <div class="katex-display">
+                            $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
+                        </div>
+                        <p>其中 z 是线性组合：</p>
+                        <div class="katex-display">
+                            $$z = w_1 x_1 + w_2 x_2 + b$$
+                        </div>
+                        <p><strong>损失函数</strong>（交叉熵）：</p>
+                        <div class="katex-display">
+                            $$L = -\frac{1}{n}\sum_{i=1}^{n}[y_i\log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)]$$
+                        </div>
+                        <p style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                            <strong>🎯 直觉理解：</strong><br>
+                            • Sigmoid 函数将任意实数映射到 (0, 1)，可以理解为概率<br>
+                            • 当 z = 0 时，σ(z) = 0.5，这是决策边界<br>
+                            • 决策边界是线性的（一次函数），但概率变化是非线性的<br>
+                            • 通过最大化似然估计（或最小化交叉熵）学习参数
+                        </p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实践，深入理解</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>Sigmoid 函数可视化</li>
+                            <li>梯度下降实现</li>
+                            <li>二分类评估指标</li>
+                            <li>多分类扩展（Softmax）</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/index.html">→ 线性回归（回归）</a></li>
+                        <li><a href="../svm/index.html">→ SVM（分类）</a></li>
+                        <li><a href="../knn/index.html">→ KNN（分类）</a></li>
+                        <li><a href="../decision-tree/index.html">→ 决策树（分类）</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-1">Level 1</span>
+                    <p>直观可画：2D 决策边界 + 概率等高线。帮助理解分类边界的概念和 Sigmoid 函数的作用。</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/logistic-regression.js"></script>
+</body>
+</html>

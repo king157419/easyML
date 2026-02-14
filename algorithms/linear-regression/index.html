@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线性回归可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">线性回归 (Linear Regression) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <!-- 算法简介 -->
+                <section class="intro-section">
+                    <h2>什么是线性回归？</h2>
+                    <div class="intro-content">
+                        <p>线性回归是最基础的机器学习算法之一。它的目标是找到一条最佳直线（或超平面），用来描述因变量和自变量之间的关系。</p>
+                        <p>例如：根据房屋面积预测房价、根据学习时间预测考试成绩等。</p>
+                        <p><strong>核心直觉：</strong>想象你在散点图中画一条线，让所有点到这条线的距离总和最小。</p>
+                    </div>
+                </section>
+
+                <!-- 可视化交互区 -->
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c757d; margin-bottom: 15px;">拖动滑块调整参数，观察拟合线如何变化</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>斜率 (Slope, m):</label>
+                            <input type="range" id="slope-slider" min="-3" max="3" step="0.1" value="1">
+                            <span id="slope-value" class="value-display">1.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>截距 (Intercept, b):</label>
+                            <input type="range" id="intercept-slider" min="-5" max="5" step="0.1" value="0">
+                            <span id="intercept-value" class="value-display">0.0</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据噪声:</label>
+                            <input type="range" id="noise-slider" min="0" max="2" step="0.1" value="0.5">
+                            <span id="noise-value" class="value-display">0.5</span>
+                        </div>
+                        <div class="control-group">
+                            <label>样本数:</label>
+                            <input type="range" id="samples-slider" min="10" max="100" step="5" value="30">
+                            <span id="samples-value" class="value-display">30</span>
+                        </div>
+                        <div class="control-group" style="margin-left: auto;">
+                            <button id="generate-btn" class="btn btn-primary" style="padding: 8px 16px;">生成新数据</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container">
+                        <!-- D3.js 可视化将在这里渲染 -->
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">当前状态：</h4>
+                        <p>拟合方程: <code style="background: white; padding: 4px 8px; border-radius: 4px;">y = <span id="equation">1.0x + 0.0</span></code></p>
+                        <p>MSE (均方误差): <code style="background: white; padding: 4px 8px; border-radius: 4px;" id="mse-value">--</code></p>
+                        <p style="font-size: 0.9rem; color: #6c757d;">💡 提示：尝试调整斜率和截距，观察MSE变化。MSE越小，拟合越好！</p>
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>线性回归的目标是最小化<strong>均方误差 (MSE)</strong>：</p>
+                        <div class="katex-display">
+                            $$MSE = \frac{1}{n}\sum_{i=1}^{n}(y_i - \hat{y}_i)^2$$
+                        </div>
+                        <p>其中拟合线方程为：</p>
+                        <div class="katex-display">
+                            $$\hat{y} = mx + b$$
+                        </div>
+                        <p><strong>最优解</strong>（闭式解）：</p>
+                        <div class="katex-display">
+                            $$m = \frac{\sum(x_i - \bar{x})(y_i - \bar{y})}{\sum(x_i - \bar{x})^2}, \quad b = \bar{y} - m\bar{x}$$
+                        </div>
+                        <p style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                            <strong>🎯 直觉理解：</strong><br>
+                            斜率 m 控制线的"倾斜程度"——正数向上，负数向下<br>
+                            截距 b 控制线的"起始位置"——与 y 轴的交点<br>
+                            MSE 是每个点到线的垂直距离的平方平均
+                        </p>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <!-- Notebook 链接卡片 -->
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实践，深入理解</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现线性回归</li>
+                            <li>梯度下降法求解</li>
+                            <li>闭式解 vs 梯度下降</li>
+                            <li>真实数据集练习</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 快速导航 -->
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../logistic-regression/index.html">→ 逻辑回归（分类）</a></li>
+                        <li><a href="../ridge-regression/index.html">→ Ridge 回归（正则化）</a></li>
+                        <li><a href="../lasso-regression/index.html">→ Lasso 回归（L1正则）</a></li>
+                        <li><a href="../pca/index.html">→ PCA 降维</a></li>
+                    </ul>
+                </div>
+
+                <!-- 可视化等级说明 -->
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-1">Level 1</span>
+                    <p>直观可画：2D/3D散点图 + 拟合线。这是最基础的可视化，帮助建立对"回归"的直觉理解。</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/linear-regression.js"></script>
+</body>
+</html>

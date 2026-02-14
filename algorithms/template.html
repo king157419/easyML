@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>算法可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist@2.26.0/plotly.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">{{ALGORITHM_NAME}} 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <!-- 主要内容区域 -->
+            <main class="main-area">
+                <!-- 算法简介 -->
+                <section class="intro-section">
+                    <h2>什么是 {{ALGORITHM_NAME}}？</h2>
+                    <div class="intro-content">
+                        {{ALGORITHM_INTRO}}
+                    </div>
+                </section>
+
+                <!-- 可视化交互区 -->
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <div class="viz-controls">
+                        {{CONTROLS_HTML}}
+                    </div>
+                    <div id="visualization" class="viz-container">
+                        <!-- D3.js / Plotly 可视化将在这里渲染 -->
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        {{MATH_CONTENT}}
+                    </div>
+                </section>
+            </main>
+
+            <!-- 侧边栏：Notebook 链接 + 快速导航 -->
+            <aside class="sidebar">
+                <!-- Notebook 链接卡片 -->
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实践，深入理解</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">
+                            打开 Notebook
+                        </a>
+                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">
+                            在 Colab 运行
+                        </a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            {{NOTEBOOK_FEATURES}}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 快速导航 -->
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        {{RELATED_ALGORITHMS}}
+                    </ul>
+                </div>
+
+                <!-- 可视化等级说明 -->
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-{{VISUAL_LEVEL}}">Level {{VISUAL_LEVEL}}</span>
+                    <p>{{LEVEL_DESCRIPTION}}</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/{{ALGORITHM_ID}}.js"></script>
+</body>
+</html>

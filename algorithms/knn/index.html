@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNN 聚类可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回首页</a>
+            <h1 class="algo-title">KNN 聚类可视化</h1>
+        </nav>
+
+        <!-- 内容包装 -->
+        <div class="content-wrapper">
+            <!-- 主内容区 -->
+            <div class="main-area">
+                <!-- 算法简介 -->
+                <section>
+                    <h2>算法简介</h2>
+                    <div class="intro-content">
+                        <p><strong>KNN（K-Nearest Neighbors，K近邻算法）</strong> 是一种简单但强大的监督学习算法。它的核心思想非常直观：<strong>近朱者赤，近墨者黑</strong>。</p>
+                        <p>当需要预测一个新数据点的类别时，KNN 会找到训练数据中与它最近的 K 个邻居，然后根据这 K 个邻居的类别来投票决定新点的类别。</p>
+                        <p><strong>关键参数：</strong></p>
+                        <ul>
+                            <li><strong>K 值</strong>：选择多少个近邻。K 越小，模型越复杂（容易过拟合）；K 越大，决策边界越平滑（可能欠拟合）</li>
+                            <li><strong>距离度量</strong>：通常使用欧氏距离，也可以用曼哈顿距离等</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 可视化控制 -->
+                <section>
+                    <h2>交互式可视化</h2>
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label for="k-slider">K 值:</label>
+                            <input type="range" id="k-slider" min="1" max="15" step="2" value="3">
+                            <span class="value-display" id="k-value">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label for="distance-select">距离度量:</label>
+                            <select id="distance-select">
+                                <option value="euclidean">欧氏距离 (L2)</option>
+                                <option value="manhattan">曼哈顿距离 (L1)</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="dataset-select">数据集:</label>
+                            <select id="dataset-select">
+                                <option value="circles">同心圆</option>
+                                <option value="moons">月牙形</option>
+                                <option value="blobs">高斯簇</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>模式:</label>
+                            <select id="mode-select">
+                                <option value="view">查看模式</option>
+                                <option value="add">添加测试点</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button class="btn-secondary" id="generate-btn">生成新数据</button>
+                            <button class="btn-secondary" id="clear-btn">清除测试点</button>
+                        </div>
+                    </div>
+                    <div class="viz-container" id="visualization"></div>
+                    <div style="display: flex; gap: 20px; margin-top: 15px; font-size: 0.9rem; color: #6c757d;">
+                        <span>🔴 类别 0 | 🔵 类别 1 | 🟡 测试点 | ⚡ 最近邻连线</span>
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section>
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>距离计算：</strong></p>
+                        <p>对于两个点 x 和 x'，常用的距离度量包括：</p>
+                        <ul>
+                            <li><strong>欧氏距离（L2）</strong>：d(x, x') = √(Σ(xᵢ - x'ᵢ)²)</li>
+                            <li><strong>曼哈顿距离（L1）</strong>：d(x, x') = Σ|xᵢ - x'ᵢ|</li>
+                        </ul>
+                        <p><strong>分类决策：</strong></p>
+                        <p>给定测试点 x，找到其 K 个最近邻 Nₖ(x)，然后：</p>
+                        <p>ŷ = mode({yᵢ : xᵢ ∈ Nₖ(x)})</p>
+                        <p>即选择 K 个近邻中出现次数最多的类别。</p>
+                        <p><strong>K 值的影响：</strong></p>
+                        <ul>
+                            <li>K = 1：最复杂，决策边界不规则，容易受噪声影响</li>
+                            <li>K = N（训练集大小）：最简单，始终预测多数类</li>
+                            <li>通常选择奇数 K 避免投票平局</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- 复杂度分析 -->
+                <section>
+                    <h2>算法复杂度</h2>
+                    <div class="math-content">
+                        <p><strong>时间复杂度</strong>：O(n·d) 预测，其中 n 是训练样本数，d 是特征维度</p>
+                        <p><strong>空间复杂度</strong>：O(n·d) 需要存储所有训练数据</p>
+                        <p><strong>优点</strong>：简单直观，无需训练过程，对异常值不敏感（当 K > 1）</p>
+                        <p><strong>缺点</strong>：预测需要遍历所有训练数据，对高维数据效果差（维度诅咒）</p>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <!-- Jupyter Notebook 卡片 -->
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>完整的 KNN 实现代码和实验</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                        <a href="https://github.com/king157419/easyML" class="btn btn-secondary">easyML 代码仓</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 KNN 算法</li>
+                            <li>sklearn KNN 使用示例</li>
+                            <li>交叉验证选择最佳 K 值</li>
+                            <li>不同距离度量对比</li>
+                            <li>KD-Tree 加速近邻搜索</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 快速导航 -->
+                <div class="quick-nav">
+                    <h3>快速导航</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/">→ 线性回归</a></li>
+                        <li><a href="../logistic-regression/">→ 逻辑回归</a></li>
+                        <li><a href="../svm/">→ SVM 支持向量机</a></li>
+                        <li><a href="../../index.html">→ 知识图谱</a></li>
+                    </ul>
+                </div>
+
+                <!-- 难度信息 -->
+                <div class="level-info">
+                    <h3>📊 可视化难度</h3>
+                    <p><strong>Level 1</strong> - 直观可视化</p>
+                    <p>KNN 是最容易可视化的分类算法之一，因为它的决策过程完全基于距离，可以在 2D 空间中清晰展示。</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/knn.js"></script>
+</body>
+</html>

@@ -1,0 +1,191 @@
+{
+  "project_name": "MLTutor",
+  "description": "机器学习可视化教学平台",
+  "created": "2025-02-14",
+  "features": [
+    {
+      "id": "harness-001",
+      "category": "foundation",
+      "description": "创建 feature_list.json 任务追踪系统",
+      "status": "done",
+      "steps": [
+        "创建 .claude/harness/ 目录",
+        "创建 feature_list.json 模板",
+        "定义 JSON Schema: id, category, description, status, steps"
+      ]
+    },
+    {
+      "id": "harness-002",
+      "category": "foundation",
+      "description": "创建 claude-progress.txt 进度日志",
+      "status": "done",
+      "steps": [
+        "创建 .claude/harness/claude-progress.txt",
+        "定义格式: 会话号、时间、完成任务、遇到问题、下一步"
+      ]
+    },
+    {
+      "id": "harness-003",
+      "category": "foundation",
+      "description": "创建 init.sh 环境启动脚本",
+      "status": "done",
+      "steps": [
+        "创建 .claude/harness/init.sh",
+        "检测项目类型（Python/Node/通用）",
+        "自动安装依赖",
+        "启动必要服务"
+      ]
+    },
+    {
+      "id": "harness-004",
+      "category": "foundation",
+      "description": "创建 app_spec.txt 项目规范模版",
+      "status": "done",
+      "steps": [
+        "创建 .claude/harness/app_spec.template.txt",
+        "包含：项目概述、技术栈、功能需求、设计规范"
+      ]
+    },
+    {
+      "id": "harness-005",
+      "category": "automation",
+      "description": "Coding Agent 会话启动流程自动化",
+      "status": "done",
+      "steps": [
+        "自动运行: pwd → ls → 读 feature_list → 读 progress → git log",
+        "显示当前进度概要",
+        "自动运行 init.sh（如存在）"
+      ]
+    },
+    {
+      "id": "mltutor-001",
+      "category": "mltutor",
+      "description": "创建项目目录结构",
+      "status": "done",
+      "steps": [
+        "创建 index.html 主页",
+        "创建 algorithms/ 目录",
+        "创建 assets/css/ 和 assets/js/ 目录"
+      ]
+    },
+    {
+      "id": "mltutor-002",
+      "category": "mltutor",
+      "description": "实现知识图谱导航（D3.js）",
+      "status": "done",
+      "steps": [
+        "创建 assets/js/knowledge-graph.js",
+        "实现 D3.js 树形布局",
+        "添加节点点击跳转功能",
+        "添加按可视化等级着色"
+      ]
+    },
+    {
+      "id": "mltutor-003",
+      "category": "mltutor",
+      "description": "实现线性回归可视化（Level 1）",
+      "status": "done",
+      "steps": [
+        "创建 algorithms/linear-regression/index.html",
+        "创建 assets/js/linear-regression.js",
+        "添加斜率/截距/噪声/样本数滑块",
+        "实现 D3.js 散点图和拟合线",
+        "添加残差显示和 MSE 计算"
+      ]
+    },
+    {
+      "id": "mltutor-004",
+      "category": "mltutor",
+      "description": "实现逻辑回归可视化（Level 1）",
+      "status": "done",
+      "steps": [
+        "创建 algorithms/logistic-regression/index.html",
+        "创建 assets/js/logistic-regression.js",
+        "添加 w1/w2/b/分离度控制",
+        "实现决策边界和概率等高线",
+        "添加 Sigmoid 函数可视化"
+      ]
+    },
+    {
+      "id": "mltutor-005",
+      "category": "mltutor",
+      "description": "实现 SVM 交互式参数探索（Level 3 重点）",
+      "status": "done",
+      "steps": [
+        "创建 algorithms/svm/index.html",
+        "创建 assets/js/svm.js",
+        "添加 C 参数滑块（0.01-10）",
+        "实现核函数选择（Linear/RBF/Poly）",
+        "添加 Gamma 参数控制（RBF）",
+        "显示支持向量和边距区域",
+        "实现决策边界可视化"
+      ]
+    },
+    {
+      "id": "mltutor-006",
+      "category": "mltutor",
+      "description": "实现 KNN 聚类可视化（Level 1）",
+      "status": "done",
+      "steps": [
+        "创建 algorithms/knn/index.html",
+        "创建 assets/js/knn.js",
+        "添加 K 值调整（1-15）",
+        "实现距离度量选择（欧氏/曼哈顿）",
+        "支持多种数据集（同心圆/月牙形/高斯簇）",
+        "实现测试点添加模式",
+        "显示最近邻连线和预测结果",
+        "绘制决策区域（半透明背景）"
+      ]
+    },
+    {
+      "id": "mltutor-007",
+      "category": "mltutor",
+      "description": "实现神经网络逐层激活可视化",
+      "status": "done",
+      "steps": [
+        "创建 algorithms/nn/index.html",
+        "创建 assets/js/nn.js",
+        "支持配置隐藏层数（1-4）和神经元数（2-8）",
+        "实现激活函数选择（ReLU/Sigmoid/Tanh）",
+        "绘制网络结构和权重连接",
+        "显示逐层激活值（颜色深浅）",
+        "实现单步和完整前向传播模式",
+        "支持多种输入数据（XOR/圆形/螺旋）"
+      ]
+    },
+    {
+      "id": "harness-006",
+      "category": "automation",
+      "description": "验证测试机制",
+      "status": "pending",
+      "steps": [
+        "定义验证测试概念",
+        "每次新任务前先验证已有功能",
+        "发现 bug 立即修复而非继续新功能"
+      ]
+    },
+    {
+      "id": "harness-007",
+      "category": "git",
+      "description": "自动 commit 机制",
+      "status": "pending",
+      "steps": [
+        "每个任务完成后自动 git add",
+        "生成描述性 commit message",
+        "包含 Co-Authored-By 标记"
+      ]
+    },
+    {
+      "id": "mltutor-008",
+      "category": "mltutor",
+      "description": "整合 easyML 代码仓库",
+      "status": "pending",
+      "steps": [
+        "确认 easyML 仓库的正确名称和访问方式",
+        "分析 easyML 代码结构",
+        "设计整合方案（链接/嵌入/引用）",
+        "更新算法页面的 Notebook 链接"
+      ]
+    }
+  ]
+}

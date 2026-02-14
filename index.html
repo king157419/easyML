@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLTutor - 机器学习可视化教学平台</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MLTutor <span class="subtitle">机器学习可视化教学平台</span></h1>
+            <p class="subtitle-desc">建立直觉，理解算法，掌握机器学习</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 知识图谱导航区域 -->
+            <div id="knowledge-graph-container">
+                <h2 class="section-title">知识图谱导航</h2>
+                <div id="knowledge-graph"></div>
+                <p class="hint">点击节点跳转到对应算法的可视化页面</p>
+            </div>
+
+            <!-- 快速入口 -->
+            <div class="quick-access">
+                <h2 class="section-title">快速入口</h2>
+                <div class="card-grid">
+                    <a href="algorithms/linear-regression/index.html" class="card">
+                        <h3>线性回归</h3>
+                        <p>拟合数据的直线/平面</p>
+                        <span class="level-badge level-1">Level 1</span>
+                    </a>
+                    <a href="algorithms/logistic-regression/index.html" class="card">
+                        <h3>逻辑回归</h3>
+                        <p>分类问题的决策边界</p>
+                        <span class="level-badge level-1">Level 1</span>
+                    </a>
+                    <a href="algorithms/svm/index.html" class="card">
+                        <h3>支持向量机 (SVM)</h3>
+                        <p>交互式参数探索 · 重点难点</p>
+                        <span class="level-badge level-3">Level 3</span>
+                    </a>
+                    <a href="algorithms/cnn/index.html" class="card">
+                        <h3>卷积神经网络 (CNN)</h3>
+                        <p>滤波器热力图 · 逐层可视化</p>
+                        <span class="level-badge level-4">Level 4</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>参考课程：<a href="https://www.bilibili.com/video/BV1PZ421y7Fe/" target="_blank">李宏毅2024机器学习课程</a></p>
+            <p>基于 Anthropic "Effective harnesses for long-running agents" 理念构建</p>
+        </footer>
+    </div>
+
+    <script src="assets/js/knowledge-graph.js"></script>
+</body>
+</html>

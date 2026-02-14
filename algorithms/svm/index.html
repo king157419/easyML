@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVM 交互式参数探索 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
+    <style>
+        /* SVM 专有样式 */
+        .highlight-box {
+            background: linear-gradient(135deg, #fff7ed 0%, #fed7aa 100%);
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .highlight-box h4 {
+            color: #b45309;
+            margin-bottom: 10px;
+        }
+        .sv-animation {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">支持向量机 (SVM) 交互式参数探索</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 SVM？</h2>
+                    <div class="intro-content">
+                        <p>支持向量机 (Support Vector Machine) 是强大的分类算法，目标是找到一个<strong>最优超平面</strong>将两类数据分开。</p>
+                        <p><strong>核心直觉：</strong>想象你要用一根棍子（超平面）把红球和篮球分开，SVM 要找的是：</p>
+                        <ul>
+                            <li>能把两类分开（正确分类）</li>
+                            <li>棍子距离两边球都尽可能远（最大化边距）</li>
+                        </ul>
+                        <div class="highlight-box">
+                            <h4>⚠️ 重点难点：高维问题</h4>
+                            <p>SVM 在<strong>高维空间</strong>中特别强大，但高维无法直接可视化。这里我们在2D中展示，你需要理解：</p>
+                            <p>• 超平面在2D是一条线，在3D是平面，在高维是"超平面"</p>
+                            <p>• 核技巧 (kernel trick) 可以隐式地将数据映射到高维</p>
+                            <p>• 调整参数观察边距如何变化</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式参数探索 🔥</h2>
+                    <p style="color: #6c757d; margin-bottom: 15px;">调整 C 参数和核函数，观察决策边界和支持向量的变化</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>C 参数 (惩罚系数):</label>
+                            <input type="range" id="c-slider" min="0.01" max="10" step="0.01" value="1">
+                            <span id="c-value" class="value-display sv-animation">1.00</span>
+                        </div>
+                        <div class="control-group">
+                            <label>核函数:</label>
+                            <select id="kernel-select">
+                                <option value="linear">Linear (线性）</option>
+                                <option value="rbf">RBF (高斯）</option>
+                                <option value="poly">Polynomial (多项式）</option>
+                            </select>
+                        </div>
+                        <div class="control-group" id="gamma-group" style="display: none;">
+                            <label>Gamma (γ):</label>
+                            <input type="range" id="gamma-slider" min="0.1" max="10" step="0.1" value="1">
+                            <span id="gamma-value" class="value-display">1.0</span>
+                        </div>
+                        <div class="control-group" style="margin-left: auto;">
+                            <button id="generate-btn" class="btn btn-primary" style="padding: 8px 16px;">生成新数据</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container">
+                        <!-- D3.js 可视化将在这里渲染 -->
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px;">
+                        <div style="padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                            <h4 style="margin-bottom: 10px;">支持向量数：</h4>
+                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color);" id="sv-count">--</p>
+                        </div>
+                        <div style="padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                            <h4 style="margin-bottom: 10px;">边距宽度：</h4>
+                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--secondary-color);" id="margin-width">--</p>
+                        </div>
+                        <div style="padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                            <h4 style="margin-bottom: 10px;">分类准确率：</h4>
+                            <p style="font-size: 1.5rem; font-weight: bold; color: var(--level-1-color);" id="accuracy">--</p>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 15px; padding: 15px; background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
+                        <h4 style="margin-bottom: 10px;">💡 交互探索指南：</h4>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>C 参数小 (C &lt; 1)</strong>：允许更多误分类，边距更宽（更正则化）</li>
+                            <li><strong>C 参数大 (C &gt; 1)</strong>：惩罚误分类更重，边距更窄（更少正则化）</li>
+                            <li><strong>Gamma 小 (γ &lt; 1)</strong>：高斯核影响范围更大，边界更平滑</li>
+                            <li><strong>Gamma 大 (γ &gt; 1)</strong>：高斯核影响范围更小，边界更复杂</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>SVM 的目标是最大化<strong>边距</strong>：</p>
+                        <div class="katex-display">
+                            $$\max_{w,b} \frac{2}{||w||} \quad \text{s.t. } y_i(w \cdot x_i + b) \geq 1, \forall i$$
+                        </div>
+                        <p>当数据不可分时，引入<strong>松弛变量 ξ</strong> 和惩罚参数 C：</p>
+                        <div class="katex-display">
+                            $$\min_{w,b,\xi} \frac{1}{2}||w||^2 + C\sum_{i=1}^{n}\xi_i$$
+                        </div>
+                        <p><strong>核技巧</strong>（Kernel Trick）：</p>
+                        <div class="katex-display">
+                            $$K(x_i, x_j) = \phi(x_i) \cdot \phi(x_j)$$
+                        </div>
+                        <p>常用核函数：</p>
+                        <ul>
+                            <li>线性核：$K(x, x') = x \cdot x'$</li>
+                            <li>高斯核 (RBF)：$K(x, x') = \exp(-\gamma||x - x'||^2)$</li>
+                            <li>多项式核：$K(x, x') = (\gamma x \cdot x' + r)^d$</li>
+                        </ul>
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 15px;">
+                            <strong>⚠️ 高维理解：</strong><br>
+                            在2D中，超平面是一条线。在3D中是平面。在高维中，我们称之为"超平面"。虽然无法可视化，但数学原理完全相同。<br>
+                            核技巧让我们不需要显式计算 φ(x)，直接通过核函数 K(xi, xj) 计算高维中的内积！
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card" style="background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>SVM 是重点难点，建议动手实践！</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>SVM 从零实现（SMO 算法）</li>
+                            <li>不同核函数对比</li>
+                            <li>高维数据集实验</li>
+                            <li>sklearn 参数调优</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../logistic-regression/index.html">→ 逻辑回归（分类）</a></li>
+                        <li><a href="../knn/index.html">→ KNN（分类）</a></li>
+                        <li><a href="../decision-tree/index.html">→ 决策树（分类）</a></li>
+                        <li><a href="../linear-regression/index.html">→ 线性回归（回归）</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-3">Level 3</span>
+                    <p>交互式理解：2D 投影展示 + 参数探索。SVM 是高维算法，这里通过降维后的投影来理解概念，重点是理解 C 参数和核函数的作用。</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/svm.js"></script>
+</body>
+</html>
