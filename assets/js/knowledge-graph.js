@@ -107,7 +107,11 @@ const categoryColors = {
 // 初始化知识图谱
 function initKnowledgeGraph() {
     const container = document.getElementById('knowledge-graph');
-    const width = container.clientWidth;
+    if (!container) {
+        console.error('Knowledge graph container not found!');
+        return;
+    }
+    const width = container.clientWidth || 800;
     const height = 500;
 
     // 清空容器

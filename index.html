@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/kaTeX@0.16.9/dist/katex.min.css">
 </head>
 <body>
+<script>
+// 确保 D3 加载完成后再初始化
+window.addEventListener('load', function() {
+    console.log('Page loaded, D3 version:', d3.version);
+    if (typeof initKnowledgeGraph === 'function') {
+        initKnowledgeGraph();
+    } else {
+        console.error('initKnowledgeGraph not found');
+    }
+});
+</script>
     <div class="container">
         <header>
             <h1>MLTutor <span class="subtitle">机器学习可视化教学平台</span></h1>
