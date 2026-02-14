@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>朴素贝叶斯可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">朴素贝叶斯 (Naive Bayes) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是朴素贝叶斯？</h2>
+                    <div class="intro-content">
+                        <p><strong>朴素贝叶斯分类器（Naive Bayes Classifer）</strong> 是一种基于<strong>贝叶斯定理</strong>的概率分类算法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>假设各特征之间相互独立</li>
+                            <li>根据训练数据计算每个类别的概率</li>
+                            <li>预测时选择概率最高的类</li>
+                        </ul>
+                        <p><strong>贝叶斯定理：</strong></p>
+                        <p>$$P(A|B) = P(A) \cdot P(B)$$</p>
+                        <p>例如：如果 A 和 B 都独立，则 $P(A|B) = P(A) \times P(B)$</p>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整平滑参数，观察分类边界如何变化</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>平滑参数:</label>
+                            <input type="range" id="smooth-param" min="0.1" max="1" step="0.1" value="0.5">
+                            <span id="smooth-value" class="value-display">0.5</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="binary">二分类问题</option>
+                                <option value="circular">环形分布</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="train-btn" class="btn btn-primary">训练分类器</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">分类器信息：</h4>
+                        <p>平滑参数: <code id="smooth-param-value">0.5</code></p>
+                        <p>分类误差率: <code id="error-rate">--</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>贝叶斯定理：</strong></p>
+                        <p>$$P(A|B) = P(A) \cdot P(B)$$</p>
+                        <p><strong>条件独立假设：</strong></p>
+                        <ul>
+                            <li>$A$ 和 $B$ 相互独立</li>
+                            <li>训练数据统计足够大</li>
+                        </ul>
+                        <p><strong>预测规则：</strong></p>
+                        <ul>
+                            <li>比较 $P(A|B)$ 和 $P(A) \cdot P(B)$</li>
+                            <li>选择概率高的那个类</li>
+                            <li>若概率相等，随机选择</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 Naive Bayes，理解贝叶斯分类</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现贝叶斯分类器</li>
+                            <li>高斯分布数据生成</li>
+                            <li>概率计算和预测</li>
+                            <li>平滑参数调整</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                        <li><a href="../decision-tree/index.html">决策树</a></li>
+                        <li><a href="../logistic-regression/index.html">逻辑回归</a></li>
+                        <li><a href="../svm/index.html">支持向量机 (SVM)</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>结构理解 · 概率建模 · 贝叶斯定理</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/naive-bayes.js"></script>
+</body>
+</html>
