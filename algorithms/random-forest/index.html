@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随机森林可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱图谱</a>
+            <h1 class="algo-title">随机森林可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是随机森林？</h2>
+                    <div class="intro-content">
+                        <p><strong>随机森林（Random Forest）</strong> 是一种<strong>集成学习</strong>算法。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>就像"三个臭皮匠赛智慧"，一个裁缝不行就换一个</li>
+                            <li>每个裁缝匠做出自己的预测</li>
+                            <li>最后把所有预测结果汇总（投票）</li>
+                        </ul>
+                        <p><strong>与决策树对比：</strong></p>
+                        <ul>
+                            <li>决策树：一棵树，深度分析</li>
+                            <li>随机森林：多棵树，投票预测</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整参数，观察随机森林如何集成学习</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>树数量:</label>
+                            <input type="number" id="num-trees" min="1" max="10" step="1" value="5">
+                            <span id="num-trees-value" class="value-display">5</span>
+                        </div>
+                        <div class="control-group">
+                            <label>树深度:</label>
+                            <input type="number" id="tree-depth" min="1" max="10" step="1" value="3">
+                            <span id="tree-depth-value" class="value-display">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label>训练集大小:</label>
+                            <input type="range" id="dataset-size" min="100" max="1000" step="100" value="500">
+                            <span id="dataset-size-value" class="value-display">500</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="train-btn" class="btn btn-primary">训练随机森林</button>
+                            <button id="classify-btn" class="btn btn-secondary">分类新数据点</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">森林结构信息：</h4>
+                        <p>树数量: <code id="num-trees-display">5</code></p>
+                        <p>最大深度: <code id="tree-depth-display">3</code></p>
+                        <p>训练集大小: <code id="dataset-size-value">500</code></p>
+                        <p>待分类点: <code id="pending-points">0</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>Bagging（Bootstrap Aggregating）：</strong></p>
+                        <p>有放回抽样（Bootstrap Aggregating）</p>
+                        <p>训练多棵决策树，每棵树使用训练数据的不同bootstrap样本</p>
+                        <p>最终通过<strong>投票（Voting）</strong>来分类</p>
+                        <p><strong>随机特征：</strong></p>
+                        <ul>
+                            <li>在每个节点随机选择特征用于分裂</li>
+                            <li>每个树使用不同的bootstrap采样</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现随机森林，理解集成学习</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现决策树</li>
+                            <li>Bootrap 聚合采样</li>
+                            <li>投票分类机制</li>
+                            <li>可视化树边界</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                        <li><a href="../decision-tree/index.html">决策树</a></li>
+                        <li><a href="../naive-bayes/index.html">朴素贝叶斯</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-3">Level 3</span>
+                    <p>集成学习 · 多模型融合 · 投票机制</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/random-forest.js"></script>
+</body>
+</html>
