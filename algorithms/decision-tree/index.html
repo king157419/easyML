@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>决策树可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">决策树 (Decision Tree) 可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <!-- 算法简介 -->
+                <section class="intro-section">
+                    <h2>什么是决策树？</h2>
+                    <div class="intro-content">
+                        <p><strong>决策树（Decision Tree）</strong> 是一种直观的分类算法。它通过一系列"是/否"问题将数据逐步分类。</p>
+                        <p><strong>核心直觉：</strong>想象你在玩"20个问题"猜谜游戏：</p>
+                        <ul>
+                            <li>问题 1：这个动物有翅膀吗？→ 是/否</li>
+                            <li>问题 2：它会飞吗？→ 是/否</li>
+                            <li>问题 3：它是哺乳动物吗？→ 是/否</li>
+                            <li>...最终得出结论：这是鸟/狗/猫</li>
+                        </ul>
+                        <p>每个内部节点都是一个决策点，叶子节点是最终分类。</p>
+                    </div>
+                </section>
+
+                <!-- 可视化交互区 -->
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整参数，观察决策树如何生长和分裂</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>树深度:</label>
+                            <input type="range" id="max-depth" min="1" max="6" step="1" value="3">
+                            <span id="max-depth-value" class="value-display">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label>最小分裂样本数:</label>
+                            <input type="range" id="min-samples" min="1" max="10" step="1" value="2">
+                            <span id="min-samples-value" class="value-display">2</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="classic">经典分类</option>
+                                <option value="xor">XOR 问题</option>
+                                <option value="circle">圆形分类</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="build-btn" class="btn btn-primary">构建决策树</button>
+                            <button id="random-btn" class="btn btn-secondary">随机数据</button>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">树的结构信息：</h4>
+                        <p>节点数: <code id="node-count">0</code></p>
+                        <p>最大深度: <code id="tree-depth">0</code></p>
+                        <p>叶子节点数: <code id="leaf-count">0</code></p>
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p>决策树的核心是如何选择<strong>最佳分裂点</strong>。</p>
+                        <p>常用准则包括：</p>
+                        <ul>
+                            <li><strong>信息增益 (Information Gain)</strong>：基于熵的度量，ID3 算法</li>
+                            <li><strong>基尼不纯度 (Gini Impurity)</strong>：CART 算法</li>
+                            <li><strong>卡方检验 (Chi-Square)</strong>：CHAID 算法</li>
+                        </ul>
+                        <p><strong>分裂停止条件：</strong></p>
+                        <ul>
+                            <li>所有样本属于同一类别</li>
+                            <li>没有更多特征可以分裂</li>
+                            <li>达到最大深度</li>
+                            <li>节点样本数小于阈值</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现决策树，理解分裂准则</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 ID3 算法</li>
+                            <li>信息增益计算</li>
+                            <li>剪枝策略</li>
+                            <li>真实数据集应用</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/index.html">线性回归</a></li>
+                        <li><a href="../logistic-regression/index.html">逻辑回归</a></li>
+                        <li><a href="../knn/index.html">K 近邻</a></li>
+                        <li><a href="../svm/index.html">支持向量机</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>结构理解 · 决策过程可视化 · 树形结构</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/decision-tree.js"></script>
+</body>
+</html>
