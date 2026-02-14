@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ridge 回归可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">Ridge 回归（L2 正则化）</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 Ridge 回归？</h2>
+                    <div class="intro-content">
+                        <p><strong>Ridge 回归（岭回归）</strong> 是线性回归的<strong>L2 正则化</strong>版本。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>在损失函数中添加权重平方和作为惩罚项</li>
+                            <li>约束权重的大小，防止过拟合</li>
+                            <li>当特征高度相关时特别有用</li>
+                        </ul>
+                        <p><strong>与普通线性回归对比：</strong></p>
+                        <ul>
+                            <li>普通回归：最小化 $\sum(y_i - \hat{y}_i)^2$</li>
+                            <li>Ridge 回归：最小化 $\sum(y_i - \hat{y}_i)^2 + \alpha \sum w_j^2$</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整正则化参数，观察 Ridge 如何收缩权重</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>正则化强度 (α):</label>
+                            <input type="range" id="alpha" min="0" max="100" step="1" value="10">
+                            <span id="alpha-value" class="value-display">10</span>
+                        </div>
+                        <div class="control-group">
+                            <label>噪声水平:</label>
+                            <input type="range" id="noise" min="0" max="50" step="5" value="20">
+                            <span id="noise-value" class="value-display">20</span>
+                        </div>
+                        <div class="control-group">
+                            <label>训练点数:</label>
+                            <input type="range" id="num-points" min="10" max="100" step="5" value="30">
+                            <span id="num-points-value" class="value-display">30</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="generate-btn" class="btn btn-secondary">生成新数据</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div class="viz-panel">
+                            <h4>数据与拟合线</h4>
+                            <div id="main-viz" class="viz-sub"></div>
+                        </div>
+                        <div class="viz-panel">
+                            <h4>权重变化</h4>
+                            <div id="weight-viz" class="viz-sub"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">模型信息：</h4>
+                        <p>斜率 (w): <code id="slope">--</code></p>
+                        <p>截距 (b): <code id="intercept">--</code></p>
+                        <p>R² 分数: <code id="r2-score">--</code></p>
+                        <p>L2 惩罚: <code id="l2-penalty">--</code></p>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. 普通线性回归：</strong></p>
+                        <p>$$\min_w \sum_{i=1}^n (y_i - w^T x_i)^2$$</p>
+
+                        <p><strong>2. Ridge 回归（添加 L2 惩罚）：</strong></p>
+                        <p>$$\min_w \sum_{i=1}^n (y_i - w^T x_i)^2 + \alpha \sum_{j=1}^p w_j^2$$</p>
+
+                        <p><strong>3. 闭式解：</strong></p>
+                        <p>$$w = (X^T X + \alpha I)^{-1} X^T y$$</p>
+                        <p>其中 $I$ 是单位矩阵，$\alpha$ 是正则化强度。</p>
+
+                        <p><strong>4. 权重收缩效果：</strong></p>
+                        <ul>
+                            <li>当 $\alpha \to 0$：Ridge 回归 ≈ 普通线性回归</li>
+                            <li>当 $\alpha \to \infty$：所有权重趋近于 0</li>
+                            <li>适度的 $\alpha$ 可以防止过拟合</li>
+                        </ul>
+
+                        <p><strong>5. Ridge vs Lasso：</strong></p>
+                        <ul>
+                            <li>Ridge (L2)：权重趋近于 0 但不等于 0（收缩）</li>
+                            <li>Lasso (L1)：权重可能精确等于 0（稀疏性）</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 Ridge 回归，理解 L2 正则化</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 Ridge 回归</li>
+                            <li>交叉验证选择最优 α</li>
+                            <li>与普通回归对比</li>
+                            <li>处理多重共线性</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/index.html">线性回归</a></li>
+                        <li><a href="../lasso-regression/index.html">Lasso 回归</a></li>
+                        <li><a href="../polynomial-regression/index.html">多项式回归</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>L2 正则化 · 权重收缩 · 过拟合防止</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/ridge-regression.js"></script>
+</body>
+</html>

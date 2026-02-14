@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lasso 回归可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">Lasso 回归（L1 正则化）</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <section class="intro-section">
+                    <h2>什么是 Lasso 回归？</h2>
+                    <div class="intro-content">
+                        <p><strong>Lasso 回归（Least Absolute Shrinkage and Selection Operator）</strong> 是线性回归的<strong>L1 正则化</strong>版本。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>在损失函数中添加权重绝对值作为惩罚项</li>
+                            <li>能够产生<strong>稀疏解</strong>：许多权重精确变为 0</li>
+                            <li>自动进行特征选择</li>
+                        </ul>
+                        <p><strong>与 Ridge 对比：</strong></p>
+                        <ul>
+                            <li>Ridge (L2)：权重收缩到接近 0</li>
+                            <li>Lasso (L1)：权重可以精确等于 0</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">观察 Lasso 如何将不重要的特征权重置零</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>正则化强度 (α):</label>
+                            <input type="range" id="alpha" min="0" max="10" step="0.1" value="1">
+                            <span id="alpha-value" class="value-display">1</span>
+                        </div>
+                        <div class="control-group">
+                            <label>特征数量:</label>
+                            <input type="range" id="num-features" min="2" max="5" step="1" value="3">
+                            <span id="num-features-value" class="value-display">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label>噪声水平:</label>
+                            <input type="range" id="noise" min="0" max="50" step="5" value="20">
+                            <span id="noise-value" class="value-display">20</span>
+                        </div>
+                        <div class="control-group">
+                            <button id="generate-btn" class="btn btn-secondary">生成新数据</button>
+                            <button id="reset-btn" class="btn btn-secondary">重置</button>
+                        </div>
+                    </div>
+
+                    <div class="viz-container">
+                        <div class="viz-panel">
+                            <h4>预测 vs 真实值</h4>
+                            <div id="pred-viz" class="viz-sub"></div>
+                        </div>
+                        <div class="viz-panel">
+                            <h4>特征权重</h4>
+                            <div id="weight-viz" class="viz-sub"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">模型信息：</h4>
+                        <div id="weights-info"></div>
+                        <p>R² 分数: <code id="r2-score">--</code></p>
+                        <p>非零特征数: <code id="nonzero-count">--</code></p>
+                    </div>
+
+                    <div style="margin-top: 15px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">L1 vs L2 正则化对比：</h4>
+                        <div id="comparison-viz"></div>
+                    </div>
+                </section>
+
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>1. Lasso 目标函数：</strong></p>
+                        <p>$$\min_w \sum_{i=1}^n (y_i - w^T x_i)^2 + \alpha \sum_{j=1}^p |w_j|$$</p>
+
+                        <p><strong>2. 几何解释：</strong></p>
+                        <ul>
+                            <li>L1 约束区域是菱形（有尖角）</li>
+                            <li>等高线更容易在尖角处接触</li>
+                            <li>在坐标轴上接触 = 某些权重为 0</li>
+                        </ul>
+
+                        <p><strong>3. 坐标下降算法（Coordinate Descent）：</strong></p>
+                        <p>对于每个特征 j：</p>
+                        <p>$$w_j = S(z_j, \alpha) / (\sum_{i=1}^n x_{ij}^2)$$</p>
+                        <p>其中 $S$ 是软阈值函数：</p>
+                        <p>$$S(z, \alpha) = \text{sign}(z) \cdot \max(|z| - \alpha, 0)$$</p>
+
+                        <p><strong>4. 稀疏性：</strong></p>
+                        <ul>
+                            <li>当 $|z_j| \leq \alpha$ 时，$w_j = 0$</li>
+                            <li>这是 Lasso 产生稀疏解的关键</li>
+                        </ul>
+                    </div>
+                </section>
+            </main>
+
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 Lasso 回归，理解 L1 正则化</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 Lasso 回归</li>
+                            <li>坐标下降算法</li>
+                            <li>软阈值函数可视化</li>
+                            <li>特征选择演示</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../linear-regression/index.html">线性回归</a></li>
+                        <li><a href="../ridge-regression/index.html">Ridge 回归</a></li>
+                        <li><a href="../polynomial-regression/index.html">多项式回归</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-2">Level 2</span>
+                    <p>L1 正则化 · 稀疏性 · 特征选择</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/lasso-regression.js"></script>
+</body>
+</html>
