@@ -31,7 +31,8 @@ const knowledgeData = {
                         { name: "逻辑回归", nameEn: "Logistic Regression", level: 3, url: "algorithms/logistic-regression/index.html", visualLevel: 1 },
                         { name: "决策树", nameEn: "Decision Tree", level: 3, url: "algorithms/decision-tree/index.html", visualLevel: 2 },
                         { name: "K-Means", nameEn: "K-Means", level: 3, url: "algorithms/k-means/index.html", visualLevel: 1 },
-                        { name: "随机森林", nameEn: "Random Forest", level: 3, url: "#", visualLevel: 2 },
+                        { name: "PCA", nameEn: "PCA", level: 3, url: "algorithms/pca/index.html", visualLevel: 2 },
+                        { name: "随机森林", nameEn: "Random Forest", level: 3, url: "#", visualLevel: 2 },,
                         { name: "支持向量机", nameEn: "SVM", level: 3, url: "algorithms/svm/index.html", visualLevel: 3, highlight: true },
                         { name: "K 近邻", nameEn: "KNN", level: 3, url: "algorithms/knn/index.html", visualLevel: 1 },
                         { name: "朴素贝叶斯", nameEn: "Naive Bayes", level: 3, url: "#", visualLevel: 2 }
