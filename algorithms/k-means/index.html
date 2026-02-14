@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Means 聚类可视化 - MLTutor</title>
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="stylesheet" href="../../assets/css/algorithm.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar">
+            <a href="../../index.html" class="back-link">← 返回知识图谱</a>
+            <h1 class="algo-title">K-Means 聚类可视化</h1>
+        </nav>
+
+        <div class="content-wrapper">
+            <main class="main-area">
+                <!-- 算法简介 -->
+                <section class="intro-section">
+                    <h2>什么是 K-Means？</h2>
+                    <div class="intro-content">
+                        <p><strong>K-Means</strong> 是一种经典的<strong>无监督聚类</strong>算法。它将数据分组到 K 个簇中。</p>
+                        <p><strong>核心直觉：</strong></p>
+                        <ul>
+                            <li>随机选择 K 个中心点</li>
+                            <li>将每个数据点分配到最近的中心</li>
+                            <li>更新中心点为簇的平均值</li>
+                            <li>重复直到收敛</li>
+                        </ul>
+                        <p><strong>收敛条件：</strong>中心点不再变化，或达到最大迭代次数</p>
+                    </div>
+                </section>
+
+                <!-- 可视化交互区 -->
+                <section class="visualization-section">
+                    <h2>交互式可视化</h2>
+                    <p style="color: #6c787d; margin-bottom: 15px;">调整参数，观察聚类过程如何收敛</p>
+
+                    <div class="viz-controls">
+                        <div class="control-group">
+                            <label>K 值 (簇数):</label>
+                            <input type="range" id="k-value" min="2" max="8" step="1" value="3">
+                            <span id="k-value-display" class="value-display">3</span>
+                        </div>
+                        <div class="control-group">
+                            <label>最大迭代:</label>
+                            <input type="range" id="max-iterations" min="5" max="50" step="5" value="20">
+                            <span id="max-iterations-display" class="value-display">20</span>
+                        </div>
+                        <div class="control-group">
+                            <label>数据集:</label>
+                            <select id="dataset-select">
+                                <option value="blobs">高斯分布</option>
+                                <option value="circles">同心圆</option>
+                                <option value="moons">月牙形</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <button id="reset-btn" class="btn btn-secondary">重置数据</button>
+                            <button id="step-btn" class="btn btn-secondary">单步迭代</button>
+                            <button id="run-btn" class="btn btn-primary">自动运行</button>
+                        </div>
+                        <div class="control-group">
+                            <label>当前迭代:</label>
+                            <span id="iteration-display" class="value-display">0</span>
+                        </div>
+                    </div>
+
+                    <div id="visualization" class="viz-container"></div>
+
+                    <div style="margin-top: 20px; padding: 15px; background: var(--bg-color); border-radius: 8px;">
+                        <h4 style="margin-bottom: 10px;">聚类状态：</h4>
+                        <p>是否收敛: <code id="converged-status">运行中...</code></p>
+                        <p>最终误差: <code id="final-error">--</code></p>
+                        <p>簇内方差和: <code id="cluster-variance">--</code></p>
+                    </div>
+                </section>
+
+                <!-- 数学原理 -->
+                <section class="math-section">
+                    <h2>数学原理</h2>
+                    <div class="math-content">
+                        <p><strong>目标：</strong>最小化簇内方差和（Within-Cluster Sum of Squared Errors, WC-SSE）</p>
+                        <p>$$J = \sum_{j=1}^{K} \sum_{i=1}^{N_j} ||x_i - \mu_j||^2$$</p>
+                        <p>其中：</p>
+                        <ul>
+                            <li>$K$ 是簇的数量</li>
+                            <li>$N_j$ 是第 $j$ 个簇的样本数</li>
+                            <li>$\mu_j$ 是第 $j$ 个簇的中心点</li>
+                            <li>$x_i$ 是数据点</li>
+                        </ul>
+                        <p><strong>算法步骤：</strong></p>
+                        <ol>
+                            <li>随机初始化 K 个中心点</li>
+                            <li>将每个样本分配到最近的中心</li>
+                            <li>重新计算每个簇的平均值作为新中心</li>
+                            <li>重复步骤 2-3 直到收敛</li>
+                        </ol>
+                    </div>
+                </section>
+            </main>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <div class="notebook-card">
+                    <h3>📓 Jupyter Notebook</h3>
+                    <p>动手实现 K-Means，理解聚类算法</p>
+                    <div class="notebook-actions">
+                        <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
+                    </div>
+                    <div class="notebook-preview">
+                        <p>包含内容：</p>
+                        <ul class="notebook-features">
+                            <li>从零实现 K-Means</li>
+                            <li>可视化收敛过程</li>
+                            <li>不同 K 值的影响</li>
+                            <li>K-means++ 初始化改进</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="quick-nav">
+                    <h3>相关算法</h3>
+                    <ul class="quick-nav-list">
+                        <li><a href="../knn/index.html">K 近邻 (KNN)</a></li>
+                        <li><a href="../decision-tree/index.html">决策树</a></li>
+                        <li><a href="../pca/index.html">PCA 降维</a></li>
+                    </ul>
+                </div>
+
+                <div class="level-info">
+                    <h3>可视化等级</h3>
+                    <span class="level-badge level-1">Level 1</span>
+                    <p>基础聚类 · 迭代优化 · 直观可画</p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script src="../../assets/js/k-means.js"></script>
+</body>
+</html>
