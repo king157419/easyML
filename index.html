@@ -59,7 +59,13 @@ window.addEventListener('load', function() {
         <div class="main-content">
             <!-- 知识图谱导航区域 -->
             <div id="knowledge-graph-container">
-                <div id="knowledge-graph"></div>
+                <!-- 模式切换按钮 -->
+                <div class="graph-mode-switch">
+                    <button class="mode-btn active" data-mode="knowledge" onclick="switchGraphMode('knowledge')">知识图谱</button>
+                    <button class="mode-btn" data-mode="evolution" onclick="switchGraphMode('evolution')">进化史</button>
+                </div>
+                <div id="knowledge-graph" class="graph-view active"></div>
+                <div id="evolution-graph" class="graph-view"></div>
                 <p class="hint">点击节点跳转到对应算法 · Ctrl+滚轮或双指缩放</p>
             </div>
 

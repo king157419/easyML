@@ -31,6 +31,116 @@
                     </div>
                 </section>
 
+                <!-- 深度理解模块 -->
+                <section class="deep-understanding">
+                    <!-- 适用场景 -->
+                    <div class="info-card scenario-card">
+                        <h3>🎯 适用场景</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>数据呈线性关系</strong>：自变量和因变量之间大致呈直线关系</li>
+                                <li><strong>需要可解释性</strong>：想了解每个特征对结果的影响程度</li>
+                                <li><strong>快速基线模型</strong>：作为复杂模型的基准对比</li>
+                                <li><strong>特征数量适中</strong>：特征数不超过样本数太多</li>
+                                <li><strong>预测连续值</strong>：房价、销量、温度等数值预测</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- 历史渊源 -->
+                    <div class="info-card history-card">
+                        <h3>📜 历史渊源</h3>
+                        <div class="info-content">
+                            <p><strong>1805年</strong>，法国数学家勒让德（Legendre）在研究彗星轨道时首次发表了<strong>最小二乘法</strong>。</p>
+                            <p><strong>1809年</strong>，高斯（Gauss）声称他更早就使用了这个方法，并给出了更完善的理论推导。</p>
+                            <p>有趣的是，最小二乘法的诞生是为了解决天文学问题——从带噪声的观测数据中估计天体轨道参数。这与今天机器学习从数据中学习模型参数本质上是一样的！</p>
+                        </div>
+                    </div>
+
+                    <!-- 发展脉络 -->
+                    <div class="info-card evolution-card">
+                        <h3>🔗 发展脉络</h3>
+                        <div class="evolution-timeline">
+                            <div class="evo-node">
+                                <div class="evo-circle">1805</div>
+                                <div class="evo-name">线性回归</div>
+                                <div class="evo-year">最基础</div>
+                            </div>
+                            <div class="evo-reason">只能拟合直线</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../polynomial-regression/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1815</div>
+                                <div class="evo-name">多项式回归</div>
+                                <div class="evo-year">曲线拟合</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">容易过拟合</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../ridge-regression/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1970</div>
+                                <div class="evo-name">Ridge</div>
+                                <div class="evo-year">L2正则化</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">需要特征选择</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../lasso-regression/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1996</div>
+                                <div class="evo-name">Lasso</div>
+                                <div class="evo-year">L1正则化</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">复杂非线性</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../nn/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1986</div>
+                                <div class="evo-name">神经网络</div>
+                                <div class="evo-year">万能拟合</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 局限性 -->
+                    <div class="info-card limitation-card">
+                        <h3>⚠️ 局限性</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>只能拟合线性关系</strong>：如果数据是曲线，线性回归效果很差</li>
+                                <li><strong>对异常值敏感</strong>：一个极端的离群点可以显著影响回归线</li>
+                                <li><strong>假设特征独立</strong>：多重共线性会导致参数估计不稳定</li>
+                                <li><strong>容易过拟合</strong>：当特征很多而样本很少时</li>
+                                <li><strong>外推不可靠</strong>：超出训练数据范围的预测往往不准</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fee2e2; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>这些局限催生了：</strong>多项式回归（非线性）、Ridge/Lasso（正则化）、鲁棒回归（抗异常值）
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 工业界地位 -->
+                    <div class="info-card industry-card">
+                        <h3>🏢 工业界地位</h3>
+                        <div class="info-content">
+                            <span class="industry-usage usage-high">广泛使用</span>
+                            <p>尽管已有200多年历史，线性回归在工业界仍然是<strong>最常用的算法之一</strong>：</p>
+                            <ul>
+                                <li><strong>金融风控</strong>：信用评分、违约预测（作为基线模型）</li>
+                                <li><strong>电商</strong>：销量预测、价格敏感度分析</li>
+                                <li><strong>广告</strong>：点击率预估的基础模型</li>
+                                <li><strong>因果推断</strong>：A/B测试分析、政策效果评估</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #e0e7ff; border-radius: 6px; font-size: 0.9rem;">
+                                🎯 <strong>为什么还在用？</strong>简单、快速、可解释性强。在很多场景下，复杂模型的性能提升并不显著，而线性回归的透明度和可维护性更有价值。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- 可视化交互区 -->
                 <section class="visualization-section">
                     <h2>交互式可视化</h2>

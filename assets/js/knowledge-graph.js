@@ -292,3 +292,432 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM loaded, waiting for D3...');
     initKnowledgeGraph();
 });
+
+// ============================================
+// 算法进化史数据
+// ============================================
+
+const evolutionData = {
+    nodes: [
+        // 回归系列
+        { id: "linear-regression", name: "线性回归", year: 1805,
+          brief: "最基础的回归方法，用直线拟合数据",
+          url: "algorithms/linear-regression/index.html" },
+        { id: "polynomial-regression", name: "多项式回归", year: 1815,
+          brief: "解决非线性关系，用曲线拟合",
+          url: "algorithms/polynomial-regression/index.html" },
+        { id: "ridge-regression", name: "Ridge回归", year: 1970,
+          brief: "L2正则化，解决过拟合问题",
+          url: "algorithms/ridge-regression/index.html" },
+        { id: "lasso-regression", name: "Lasso回归", year: 1996,
+          brief: "L1正则化，可做特征选择",
+          url: "algorithms/lasso-regression/index.html" },
+
+        // 分类系列
+        { id: "logistic-regression", name: "逻辑回归", year: 1958,
+          brief: "经典分类算法，输出概率",
+          url: "algorithms/logistic-regression/index.html" },
+        { id: "knn", name: "K近邻", year: 1951,
+          brief: "简单直观，基于距离的分类",
+          url: "algorithms/knn/index.html" },
+        { id: "naive-bayes", name: "朴素贝叶斯", year: 1960,
+          brief: "基于概率的快速分类器",
+          url: "algorithms/naive-bayes/index.html" },
+        { id: "decision-tree", name: "决策树", year: 1986,
+          brief: "可解释性强，树形决策",
+          url: "algorithms/decision-tree/index.html" },
+        { id: "svm", name: "SVM", year: 1995,
+          brief: "最大化分类间隔，核技巧处理非线性",
+          url: "algorithms/svm/index.html" },
+        { id: "random-forest", name: "随机森林", year: 2001,
+          brief: "多棵树投票，解决单树过拟合",
+          url: "algorithms/random-forest/index.html" },
+
+        // 神经网络系列
+        { id: "nn", name: "神经网络", year: 1986,
+          brief: "反向传播，多层感知机",
+          url: "algorithms/nn/index.html" },
+        { id: "cnn", name: "CNN", year: 1998,
+          brief: "卷积提取局部特征，图像处理利器",
+          url: "algorithms/cnn/index.html" },
+        { id: "rnn", name: "RNN", year: 1986,
+          brief: "处理序列数据，有记忆能力",
+          url: "algorithms/rnn/index.html" },
+        { id: "attention", name: "Attention", year: 2014,
+          brief: "注意力机制，Transformer的核心",
+          url: "algorithms/attention/index.html" },
+
+        // 聚类系列
+        { id: "k-means", name: "K-Means", year: 1957,
+          brief: "经典聚类，需指定簇数",
+          url: "algorithms/k-means/index.html" },
+        { id: "hierarchical-clustering", name: "层次聚类", year: 1963,
+          brief: "树状结构，不需要预设簇数",
+          url: "algorithms/hierarchical-clustering/index.html" },
+        { id: "dbscan", name: "DBSCAN", year: 1996,
+          brief: "密度聚类，可发现任意形状簇",
+          url: "algorithms/dbscan/index.html" },
+
+        // 降维系列
+        { id: "pca", name: "PCA", year: 1901,
+          brief: "线性降维，保留主要方差",
+          url: "algorithms/pca/index.html" },
+        { id: "lda", name: "LDA", year: 1936,
+          brief: "有监督降维，最大化类间距离",
+          url: "algorithms/lda/index.html" },
+        { id: "tsne", name: "t-SNE", year: 2008,
+          brief: "非线性降维，可视化效果好",
+          url: "algorithms/tsne/index.html" },
+
+        // 强化学习系列
+        { id: "q-learning", name: "Q-Learning", year: 1989,
+          brief: "基于价值的学习，表格型RL",
+          url: "algorithms/q-learning/index.html" },
+        { id: "policy-gradient", name: "策略梯度", year: 1992,
+          brief: "直接优化策略，连续动作空间",
+          url: "algorithms/policy-gradient/index.html" },
+        { id: "actor-critic", name: "Actor-Critic", year: 2000,
+          brief: "结合价值和策略，更稳定",
+          url: "algorithms/actor-critic/index.html" }
+    ],
+    edges: [
+        // 回归进化链
+        { source: "linear-regression", target: "polynomial-regression",
+          reason: "线性回归只能拟合直线" },
+        { source: "linear-regression", target: "ridge-regression",
+          reason: "容易过拟合" },
+        { source: "linear-regression", target: "lasso-regression",
+          reason: "需要特征选择" },
+
+        // 分类进化链
+        { source: "logistic-regression", target: "svm",
+          reason: "需要最大间隔分类" },
+        { source: "knn", target: "svm",
+          reason: "KNN计算量大" },
+        { source: "decision-tree", target: "random-forest",
+          reason: "单棵树容易过拟合" },
+
+        // 神经网络进化链
+        { source: "nn", target: "cnn",
+          reason: "需要处理图像空间结构" },
+        { source: "nn", target: "rnn",
+          reason: "需要处理序列数据" },
+        { source: "rnn", target: "attention",
+          reason: "RNN长序列梯度消失" },
+
+        // 聚类进化链
+        { source: "k-means", target: "hierarchical-clustering",
+          reason: "K-Means需要预设簇数" },
+        { source: "k-means", target: "dbscan",
+          reason: "K-Means只能球形簇" },
+
+        // 降维进化链
+        { source: "pca", target: "lda",
+          reason: "需要利用标签信息" },
+        { source: "pca", target: "tsne",
+          reason: "PCA是线性的，无法处理复杂结构" },
+
+        // 强化学习进化链
+        { source: "q-learning", target: "policy-gradient",
+          reason: "Q表无法处理连续状态" },
+        { source: "policy-gradient", target: "actor-critic",
+          reason: "纯策略梯度方差大" }
+    ]
+};
+
+// 进化史图谱变量
+let evoSvg, evoG, evoSimulation, evoTooltip;
+let currentGraphMode = 'knowledge';
+
+// 初始化进化史图谱
+function initEvolutionGraph() {
+    const container = document.getElementById('evolution-graph');
+    if (!container) return;
+
+    const parent = container.parentElement;
+    const width = parent.clientWidth - 40;
+    const height = Math.max(500, parent.clientHeight - 40);
+
+    // 清空容器
+    d3.select('#evolution-graph').selectAll('*').remove();
+
+    // 创建 SVG
+    evoSvg = d3.select('#evolution-graph')
+        .append('svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .style('min-height', height + 'px')
+        .attr('viewBox', [0, 0, width, height]);
+
+    // 创建提示框
+    evoTooltip = d3.select('body').append('div')
+        .attr('class', 'tooltip')
+        .style('opacity', 0);
+
+    // 缩放功能
+    const zoom = d3.zoom()
+        .scaleExtent([0.3, 3])
+        .filter((event) => {
+            if (event.type === 'wheel') {
+                return event.ctrlKey || event.touches > 0;
+            }
+            return true;
+        })
+        .on('zoom', (event) => {
+            evoG.attr('transform', event.transform);
+        });
+
+    evoSvg.call(zoom);
+
+    // 创建主组
+    evoG = evoSvg.append('g');
+
+    // 准备节点数据
+    const nodes = evolutionData.nodes.map(d => ({...d}));
+    const nodeMap = {};
+    nodes.forEach(n => nodeMap[n.id] = n);
+
+    // 准备边数据
+    const links = evolutionData.edges.map(e => ({
+        source: nodeMap[e.source],
+        target: nodeMap[e.target],
+        reason: e.reason
+    }));
+
+    // 按年份排序，分配初始位置
+    nodes.sort((a, b) => a.year - b.year);
+    const yearMin = Math.min(...nodes.map(n => n.year));
+    const yearMax = Math.max(...nodes.map(n => n.year));
+
+    nodes.forEach((d, i) => {
+        // X轴按年份
+        const yearRatio = (d.year - yearMin) / (yearMax - yearMin);
+        d.x = 80 + yearRatio * (width - 160);
+        // Y轴随机分布
+        d.y = height / 2 + (Math.random() - 0.5) * (height - 200);
+    });
+
+    // 力模拟
+    evoSimulation = d3.forceSimulation(nodes)
+        .alphaDecay(0.02)
+        .velocityDecay(0.3)
+        .force('link', d3.forceLink(links)
+            .id(d => d.id)
+            .distance(120)
+            .strength(0.3))
+        .force('charge', d3.forceManyBody()
+            .strength(-150)
+            .distanceMax(300))
+        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.05))
+        .force('collision', d3.forceCollide().radius(35).strength(0.8))
+        .force('x', d3.forceX(d => d.x).strength(0.15));
+
+    // 绘制边
+    const link = evoG.append('g')
+        .selectAll('g')
+        .data(links)
+        .join('g');
+
+    // 边线
+    link.append('path')
+        .attr('class', 'evolution-edge')
+        .attr('d', d => {
+            const dx = d.target.x - d.source.x;
+            const dy = d.target.y - d.source.y;
+            return `M${d.source.x},${d.source.y}L${d.target.x},${d.target.y}`;
+        })
+        .style('stroke', '#94a3b8')
+        .style('stroke-width', 2)
+        .style('fill', 'none')
+        .style('marker-end', 'url(#arrow)');
+
+    // 边标签
+    link.append('text')
+        .attr('class', 'evolution-edge-label')
+        .attr('x', d => (d.source.x + d.target.x) / 2)
+        .attr('y', d => (d.source.y + d.target.y) / 2 - 8)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '9px')
+        .style('fill', '#64748b')
+        .text(d => d.reason.length > 8 ? d.reason.slice(0, 8) + '...' : d.reason);
+
+    // 添加箭头定义
+    evoSvg.append('defs').append('marker')
+        .attr('id', 'arrow')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 20)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', '#94a3b8');
+
+    // 绘制节点
+    const node = evoG.append('g')
+        .selectAll('g')
+        .data(nodes)
+        .join('g')
+        .attr('class', 'evo-node')
+        .style('cursor', 'pointer')
+        .call(d3.drag()
+            .on('start', evoDragStarted)
+            .on('drag', evoDragged)
+            .on('end', evoDragEnded));
+
+    // 节点圆形
+    node.append('circle')
+        .attr('r', 18)
+        .style('fill', d => getEraColor(d.year))
+        .style('stroke', '#fff')
+        .style('stroke-width', 2)
+        .on('click', function(event, d) {
+            if (d.url) window.location.href = d.url;
+        })
+        .on('mouseover', function(event, d) {
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr('r', 22);
+
+            evoTooltip.transition()
+                .duration(200)
+                .style('opacity', 1);
+            evoTooltip.html(`
+                <div class="tooltip-title">${d.name}</div>
+                <div class="tooltip-year">${d.year}年</div>
+                <div class="tooltip-desc">${d.brief}</div>
+            `)
+                .style('left', (event.pageX + 15) + 'px')
+                .style('top', (event.pageY - 28) + 'px');
+        })
+        .on('mouseout', function(event, d) {
+            d3.select(this)
+                .transition()
+                .duration(150)
+                .attr('r', 18);
+            evoTooltip.transition()
+                .duration(200)
+                .style('opacity', 0);
+        });
+
+    // 节点名称
+    node.append('text')
+        .text(d => d.name)
+        .attr('dy', 30)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '11px')
+        .style('font-weight', '500')
+        .style('fill', '#374151')
+        .style('pointer-events', 'none');
+
+    // 年份标签
+    node.append('text')
+        .text(d => d.year)
+        .attr('dy', 4)
+        .attr('text-anchor', 'middle')
+        .style('font-size', '9px')
+        .style('fill', '#fff')
+        .style('pointer-events', 'none');
+
+    // 更新位置
+    evoSimulation.on('tick', () => {
+        link.selectAll('path')
+            .attr('d', d => {
+                return `M${d.source.x},${d.source.y}L${d.target.x},${d.target.y}`;
+            });
+        link.selectAll('text')
+            .attr('x', d => (d.source.x + d.target.x) / 2)
+            .attr('y', d => (d.source.y + d.target.y) / 2 - 8);
+
+        node.attr('transform', d => `translate(${d.x},${d.y})`);
+    });
+
+    // 添加年代图例
+    const legend = evoG.append('g')
+        .attr('transform', `translate(20, 20)`);
+
+    const eras = [
+        { label: '1950s前', color: '#10b981' },
+        { label: '1950-1980', color: '#3b82f6' },
+        { label: '1980-2000', color: '#f59e0b' },
+        { label: '2000后', color: '#8b5cf6' }
+    ];
+
+    legend.selectAll('g')
+        .data(eras)
+        .join('g')
+        .attr('transform', (d, i) => `translate(${i * 80}, 0)`)
+        .call(g => {
+            g.append('circle')
+                .attr('r', 6)
+                .attr('cx', 0)
+                .attr('cy', 0)
+                .style('fill', d => d.color);
+            g.append('text')
+                .attr('x', 12)
+                .attr('y', 4)
+                .style('font-size', '11px')
+                .style('fill', '#64748b')
+                .text(d => d.label);
+        });
+}
+
+// 根据年代返回颜色
+function getEraColor(year) {
+    if (year < 1950) return '#10b981';
+    if (year < 1980) return '#3b82f6';
+    if (year < 2000) return '#f59e0b';
+    return '#8b5cf6';
+}
+
+// 进化图谱拖拽函数
+function evoDragStarted(event, d) {
+    if (!event.active) evoSimulation.alphaTarget(0.2).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+}
+
+function evoDragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+}
+
+function evoDragEnded(event, d) {
+    if (!event.active) evoSimulation.alphaTarget(0);
+    setTimeout(() => {
+        d.fx = null;
+        d.fy = null;
+    }, 100);
+}
+
+// 切换图谱模式
+function switchGraphMode(mode) {
+    currentGraphMode = mode;
+
+    // 更新按钮状态
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+    });
+
+    // 更新视图显示
+    document.getElementById('knowledge-graph').classList.toggle('active', mode === 'knowledge');
+    document.getElementById('evolution-graph').classList.toggle('active', mode === 'evolution');
+
+    // 懒加载进化图谱
+    if (mode === 'evolution' && !evoSvg) {
+        initEvolutionGraph();
+    }
+}
+
+// 窗口大小改变时同时更新两个图谱
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+        initKnowledgeGraph();
+        if (currentGraphMode === 'evolution') {
+            initEvolutionGraph();
+        }
+    }, 300);
+});

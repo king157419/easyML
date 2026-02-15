@@ -246,3 +246,89 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+/* 模式切换按钮 */
+.graph-mode-switch {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.mode-btn {
+    padding: 8px 20px;
+    border: 2px solid var(--primary-color);
+    background: transparent;
+    color: var(--primary-color);
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.mode-btn:hover {
+    background: rgba(37, 99, 235, 0.1);
+}
+
+.mode-btn.active {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* 图谱视图切换 */
+.graph-view {
+    display: none;
+    flex: 1;
+    min-height: 400px;
+    background: var(--bg-color);
+    border-radius: 12px;
+}
+
+.graph-view.active {
+    display: block;
+}
+
+/* 悬浮提示框 */
+.tooltip {
+    position: absolute;
+    background: rgba(31, 41, 55, 0.95);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    max-width: 280px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    z-index: 1000;
+    line-height: 1.5;
+}
+
+.tooltip .tooltip-title {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: var(--accent-color);
+}
+
+.tooltip .tooltip-year {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.tooltip .tooltip-desc {
+    color: #e5e7eb;
+}
+
+/* 进化史图谱特殊样式 */
+.evolution-edge {
+    stroke: #94a3b8;
+    stroke-width: 2;
+    fill: none;
+}
+
+.evolution-edge-label {
+    font-size: 10px;
+    fill: #64748b;
+}
+
