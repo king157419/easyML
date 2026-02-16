@@ -24,8 +24,120 @@
                     <h2>什么是逻辑回归？</h2>
                     <div class="intro-content">
                         <p>逻辑回归是用于<strong>二分类问题</strong>的经典算法。尽管名字里有"回归"，但它实际上是一个分类算法。</p>
-                        <p><strong>核心区别</strong>：线性回归预测连续值（如房价），逻辑回归预测<strong>概率</strong>（如是不是垃圾邮件）。</p>
+                        <p><strong>回归 vs 分类</strong>：线性回归预测"多少"（如房价），逻辑回归回答"哪一个"（如是或否）。</p>
                         <p><strong>核心直觉</strong>：通过 Sigmoid 函数将线性输出压缩到 [0, 1] 区间，表示属于正类的概率。</p>
+                        <p><strong>典型问题</strong>：某邮件是否是垃圾邮件？某用户是否会订阅服务？某图像是猫还是狗？</p>
+                    </div>
+                </section>
+
+                <!-- 深度理解模块 -->
+                <section class="deep-understanding">
+                    <!-- 适用场景 -->
+                    <div class="info-card scenario-card">
+                        <h3>🎯 适用场景</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>二分类问题</strong>：预测只有两种可能结果的问题</li>
+                                <li><strong>需要概率输出</strong>：不仅想知道分类结果，还想知道"有多确定"</li>
+                                <li><strong>高可解释性需求</strong>：需要解释每个特征对结果的贡献</li>
+                                <li><strong>快速基线模型</strong>：作为复杂模型的对比基准</li>
+                                <li><strong>线性可分数据</strong>：数据可以被一条直线（或超平面）大致分开</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #dcfce7; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>经典应用</strong>：垃圾邮件检测、疾病诊断、信用评分、广告点击预测
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 历史渊源 -->
+                    <div class="info-card history-card">
+                        <h3>📜 历史渊源</h3>
+                        <div class="info-content">
+                            <p><strong>Sigmoid 函数</strong>的数学形式最早由 Pierre François Verhulst 在 1838 年提出，用于描述人口增长模型（Logistic 函数）。</p>
+                            <p><strong>1958年</strong>，David Cox 将逻辑函数应用于二分类问题，奠定了现代逻辑回归的基础。</p>
+                            <p>有趣的是，"Logistic"这个名字来源于 Verhulst 对人口增长曲线的命名，与"逻辑"（Logic）无关！中文名是历史翻译的巧合。</p>
+                        </div>
+                    </div>
+
+                    <!-- 发展脉络 -->
+                    <div class="info-card evolution-card">
+                        <h3>🔗 发展脉络</h3>
+                        <div class="evolution-timeline">
+                            <div class="evo-node">
+                                <div class="evo-circle">1805</div>
+                                <div class="evo-name">线性回归</div>
+                                <div class="evo-year">预测连续值</div>
+                            </div>
+                            <div class="evo-reason">需要分类</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <div class="evo-circle">1958</div>
+                                <div class="evo-name">逻辑回归</div>
+                                <div class="evo-year">二分类</div>
+                            </div>
+                            <div class="evo-reason">需要多分类</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../softmax/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1959</div>
+                                <div class="evo-name">Softmax</div>
+                                <div class="evo-year">多分类</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">非线性边界</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../svm/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1995</div>
+                                <div class="evo-name">SVM</div>
+                                <div class="evo-year">最大间隔</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">复杂特征</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../nn/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">2012</div>
+                                <div class="evo-name">深度学习</div>
+                                <div class="evo-year">端到端</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 局限性 -->
+                    <div class="info-card limitation-card">
+                        <h3>⚠️ 局限性</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>线性决策边界</strong>：只能学习线性分类边界，无法处理复杂的非线性关系</li>
+                                <li><strong>特征独立假设</strong>：假设特征之间相对独立，共线性会影响参数估计</li>
+                                <li><strong>对异常值敏感</strong>：极端数据点会显著影响模型参数</li>
+                                <li><strong>完全分离问题</strong>：当数据完全可分时，参数估计会趋向无穷大</li>
+                                <li><strong>需要特征工程</strong>：对于非线性问题，需要手动添加多项式特征</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fee2e2; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>这些局限催生了：</strong>SVM（核函数处理非线性）、神经网络（自动特征学习）、决策树（非线性分割）
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 工业界地位 -->
+                    <div class="info-card industry-card">
+                        <h3>🏢 工业界地位</h3>
+                        <div class="info-content">
+                            <span class="industry-usage usage-high">广泛使用</span>
+                            <p>逻辑回归在工业界仍然是<strong>最常用的二分类算法之一</strong>：</p>
+                            <ul>
+                                <li><strong>金融风控</strong>：信用评分卡（Scorecard）的核心算法</li>
+                                <li><strong>广告推荐</strong>：点击率预估（CTR）的基线模型</li>
+                                <li><strong>医疗诊断</strong>：疾病风险评估，需要可解释性</li>
+                                <li><strong>A/B测试</strong>：用户行为预测和转化分析</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #e0e7ff; border-radius: 6px; font-size: 0.9rem;">
+                                🎯 <strong>为什么还在用？</strong>训练速度快、预测效率高、结果可解释（权重直接反映特征重要性）、概率输出天然支持置信度评估。在大规模工业场景中，简单的逻辑回归往往比复杂模型更实用。
+                            </p>
+                        </div>
                     </div>
                 </section>
 
@@ -89,19 +201,34 @@
                         </div>
                         <p>其中 z 是线性组合：</p>
                         <div class="katex-display">
-                            $$z = w_1 x_1 + w_2 x_2 + b$$
+                            $$z = w_1 x_1 + w_2 x_2 + b = \mathbf{w}^T\mathbf{x} + b$$
                         </div>
-                        <p><strong>损失函数</strong>（交叉熵）：</p>
+                        <p><strong>为什么用 Sigmoid？</strong></p>
+                        <ul>
+                            <li>输出范围 (0, 1)，符合概率定义</li>
+                            <li>导数优美：$\sigma'(z) = \sigma(z)(1-\sigma(z))$</li>
+                            <li>与最大似然估计自然联系</li>
+                        </ul>
+                        <p><strong>损失函数</strong>（交叉熵/对数损失）：</p>
                         <div class="katex-display">
                             $$L = -\frac{1}{n}\sum_{i=1}^{n}[y_i\log(\hat{y}_i) + (1-y_i)\log(1-\hat{y}_i)]$$
                         </div>
+                        <p><strong>信息论视角</strong>：交叉熵衡量两个概率分布的差异。我们希望模型的预测分布尽可能接近真实分布。</p>
+                        <p><strong>梯度</strong>（非常简洁！）：</p>
+                        <div class="katex-display">
+                            $$\frac{\partial L}{\partial w_j} = \frac{1}{n}\sum_{i=1}^{n}(\hat{y}_i - y_i)x_j^{(i)}$$
+                        </div>
                         <p style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color);">
-                            <strong>🎯 直觉理解：</strong><br>
-                            • Sigmoid 函数将任意实数映射到 (0, 1)，可以理解为概率<br>
+                            <strong>🎯 关键洞察：</strong><br>
+                            • 梯度形式与线性回归相同：$(\hat{y} - y)x$，只是 $\hat{y}$ 的计算方式不同<br>
                             • 当 z = 0 时，σ(z) = 0.5，这是决策边界<br>
-                            • 决策边界是线性的（一次函数），但概率变化是非线性的<br>
-                            • 通过最大化似然估计（或最小化交叉熵）学习参数
+                            • 决策边界是线性的，但概率变化是非线性的（S型曲线）<br>
+                            • 交叉熵损失 + Sigmoid = 凸优化问题，有唯一最优解
                         </p>
+                        <p><strong>扩展到多分类</strong>：使用 <a href="../softmax/index.html">Softmax 回归</a></p>
+                        <div class="katex-display">
+                            $$\hat{y}_j = \frac{\exp(o_j)}{\sum_{k=1}^{q} \exp(o_k)}$$
+                        </div>
                     </div>
                 </section>
             </main>
@@ -112,7 +239,7 @@
                     <p>动手实践，深入理解</p>
                     <div class="notebook-actions">
                         <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
-                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
+                        <a href="https://colab.research.google.com/github/king157419/easyML/blob/main/algorithms/logistic-regression/notebook.ipynb" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
                     </div>
                     <div class="notebook-preview">
                         <p>包含内容：</p>

@@ -60,6 +60,111 @@
                     </div>
                 </section>
 
+                <!-- 深度理解模块 -->
+                <section class="deep-understanding">
+                    <!-- 适用场景 -->
+                    <div class="info-card scenario-card">
+                        <h3>🎯 适用场景</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>中小规模数据集</strong>：样本数在几千到几万之间效果最好</li>
+                                <li><strong>高维数据</strong>：特征维度高但样本少时（如文本分类、基因数据）</li>
+                                <li><strong>需要强泛化能力</strong>：最大化边距使模型对未见数据更鲁棒</li>
+                                <li><strong>非线性可分数据</strong>：通过核技巧处理复杂边界</li>
+                                <li><strong>二分类问题</strong>：原生支持二分类，多分类需要扩展</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #dcfce7; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>经典应用</strong>：手写数字识别、文本分类、图像分类、生物信息学
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 历史渊源 -->
+                    <div class="info-card history-card">
+                        <h3>📜 历史渊源</h3>
+                        <div class="info-content">
+                            <p><strong>1963年</strong>，Vapnik 和 Chervonenkis 提出了最初的 SVM 理论（统计学习理论）。</p>
+                            <p><strong>1992年</strong>，Boser、Guyon 和 Vapnik 引入了<strong>核技巧</strong>，使 SVM 能够处理非线性问题。</p>
+                            <p><strong>1995年</strong>，Cortes 和 Vapnik 提出了<strong>软间隔 SVM</strong>（引入松弛变量），解决了现实中数据噪声的问题。</p>
+                            <p style="margin-top: 12px; padding: 10px; background: #e0e7ff; border-radius: 6px; font-size: 0.9rem;">
+                                🎯 <strong>为什么重要？</strong>SVM 是机器学习历史上第一个有坚实理论基础的算法，它催生了"统计学习理论"这个领域。
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 发展脉络 -->
+                    <div class="info-card evolution-card">
+                        <h3>🔗 发展脉络</h3>
+                        <div class="evolution-timeline">
+                            <div class="evo-node">
+                                <a href="../logistic-regression/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1958</div>
+                                <div class="evo-name">逻辑回归</div>
+                                <div class="evo-year">概率分类</div>
+                                </a>
+                            </div>
+                            <div class="evo-reason">边距不够大</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <div class="evo-circle">1963</div>
+                                <div class="evo-name">SVM</div>
+                                <div class="evo-year">最大边距</div>
+                            </div>
+                            <div class="evo-reason">只能线性</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <div class="evo-circle">1992</div>
+                                <div class="evo-name">核SVM</div>
+                                <div class="evo-year">非线性边界</div>
+                            </div>
+                            <div class="evo-reason">大数据挑战</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../nn/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">2012</div>
+                                <div class="evo-name">深度学习</div>
+                                <div class="evo-year">自动特征</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 局限性 -->
+                    <div class="info-card limitation-card">
+                        <h3>⚠️ 局限性</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>大数据集慢</strong>：训练复杂度 O(n²) 到 O(n³)，不适合百万级数据</li>
+                                <li><strong>参数调优困难</strong>：C、γ、核函数选择需要交叉验证</li>
+                                <li><strong>可解释性差</strong>：尤其是使用核函数后，难以解释决策过程</li>
+                                <li><strong>对噪声敏感</strong>：软间隔虽然缓解了问题，但仍是挑战</li>
+                                <li><strong>多分类需要扩展</strong>：需要使用一对多或一对一策略</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fee2e2; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>这些局限催生了：</strong>线性 SVM（大规模数据）、随机森林（可解释性）、深度学习（自动特征学习）
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 工业界地位 -->
+                    <div class="info-card industry-card">
+                        <h3>🏢 工业界地位</h3>
+                        <div class="info-content">
+                            <span class="industry-usage usage-medium">特定领域使用</span>
+                            <p>SVM 在深度学习兴起前是<strong>最流行的分类算法</strong>，现在仍有特定应用：</p>
+                            <ul>
+                                <li><strong>文本分类</strong>：高维稀疏特征，SVM 仍然有效</li>
+                                <li><strong>生物信息学</strong>：基因表达数据分类</li>
+                                <li><strong>图像识别</strong>：在 CNN 之前是主流方法</li>
+                                <li><strong>入侵检测</strong>：网络安全中的异常检测</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fef3c7; border-radius: 6px; font-size: 0.9rem;">
+                                🎯 <strong>现状</strong>：在 ImageNet 等大规模视觉任务上已被 CNN 取代，但在小样本、高维数据上仍有优势。sklearn 的 SVM 实现仍然是数据科学工具箱的重要组成部分。
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
                 <section class="visualization-section">
                     <h2>交互式参数探索 🔥</h2>
                     <p style="color: #6c757d; margin-bottom: 15px;">调整 C 参数和核函数，观察决策边界和支持向量的变化</p>
@@ -154,7 +259,7 @@
                     <p>SVM 是重点难点，建议动手实践！</p>
                     <div class="notebook-actions">
                         <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
-                        <a href="https://colab.research.google.com/" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
+                        <a href="https://colab.research.google.com/github/king157419/easyML/blob/main/algorithms/svm/notebook.ipynb" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
                     </div>
                     <div class="notebook-preview">
                         <p>包含内容：</p>

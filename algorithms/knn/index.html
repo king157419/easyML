@@ -24,8 +24,8 @@
             <!-- 主内容区 -->
             <div class="main-area">
                 <!-- 算法简介 -->
-                <section>
-                    <h2>算法简介</h2>
+                <section class="intro-section">
+                    <h2>什么是 KNN？</h2>
                     <div class="intro-content">
                         <p><strong>KNN（K-Nearest Neighbors，K近邻算法）</strong> 是一种简单但强大的监督学习算法。它的核心思想非常直观：<strong>近朱者赤，近墨者黑</strong>。</p>
                         <p>当需要预测一个新数据点的类别时，KNN 会找到训练数据中与它最近的 K 个邻居，然后根据这 K 个邻居的类别来投票决定新点的类别。</p>
@@ -34,6 +34,106 @@
                             <li><strong>K 值</strong>：选择多少个近邻。K 越小，模型越复杂（容易过拟合）；K 越大，决策边界越平滑（可能欠拟合）</li>
                             <li><strong>距离度量</strong>：通常使用欧氏距离，也可以用曼哈顿距离等</li>
                         </ul>
+                    </div>
+                </section>
+
+                <!-- 深度理解模块 -->
+                <section class="deep-understanding">
+                    <!-- 适用场景 -->
+                    <div class="info-card scenario-card">
+                        <h3>🎯 适用场景</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>小规模数据集</strong>：几千到几万样本，KNN 效果很好</li>
+                                <li><strong>低维数据</strong>：特征维度不太高（避免维度诅咒）</li>
+                                <li><strong>复杂决策边界</strong>：KNN 能自然地拟合任意形状的边界</li>
+                                <li><strong>多分类问题</strong>：KNN 天然支持多分类，无需额外扩展</li>
+                                <li><strong>推荐系统</strong>：基于用户/物品相似度的推荐（协同过滤）</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #dcfce7; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>经典应用</strong>：手写数字识别、电影推荐、植物分类、医疗诊断辅助
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 历史渊源 -->
+                    <div class="info-card history-card">
+                        <h3>📜 历史渊源</h3>
+                        <div class="info-content">
+                            <p><strong>KNN 是最古老的机器学习算法之一</strong>，其基本思想可以追溯到 1951 年 Fix 和 Hodges 的非参数判别分析。</p>
+                            <p>有趣的是，KNN 在很长一段时间里被称为"lazy learning"（懒惰学习），因为它几乎不需要"学习"——只需要存储训练数据，预测时才进行计算。</p>
+                            <p>这种"懒惰"反而成为了它的优点：<strong>训练时间为零</strong>，新数据可以随时加入而不需要重新训练。</p>
+                        </div>
+                    </div>
+
+                    <!-- 发展脉络 -->
+                    <div class="info-card evolution-card">
+                        <h3>🔗 发展脉络</h3>
+                        <div class="evolution-timeline">
+                            <div class="evo-node">
+                                <div class="evo-circle">1951</div>
+                                <div class="evo-name">KNN</div>
+                                <div class="evo-year">最原始</div>
+                            </div>
+                            <div class="evo-reason">距离计算慢</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <div class="evo-circle">1975</div>
+                                <div class="evo-name">KD-Tree</div>
+                                <div class="evo-year">加速搜索</div>
+                            </div>
+                            <div class="evo-reason">高维退化</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <div class="evo-circle">1999</div>
+                                <div class="evo-name">LSH</div>
+                                <div class="evo-year">近似搜索</div>
+                            </div>
+                            <div class="evo-reason">需要更强泛化</div>
+                            <div class="evo-arrow">→</div>
+                            <div class="evo-node">
+                                <a href="../svm/index.html" style="text-decoration: none; color: inherit;">
+                                <div class="evo-circle">1995</div>
+                                <div class="evo-name">SVM</div>
+                                <div class="evo-year">最大边距</div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 局限性 -->
+                    <div class="info-card limitation-card">
+                        <h3>⚠️ 局限性</h3>
+                        <div class="info-content">
+                            <ul>
+                                <li><strong>维度诅咒</strong>：高维空间中，"最近"变得没有意义（所有点距离都差不多）</li>
+                                <li><strong>预测速度慢</strong>：需要计算到所有训练点的距离</li>
+                                <li><strong>存储开销大</strong>：需要保存所有训练数据</li>
+                                <li><strong>特征尺度敏感</strong>：需要对特征进行标准化</li>
+                                <li><strong>不平衡数据</strong>：多数类会主导投票结果</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fee2e2; border-radius: 6px; font-size: 0.9rem;">
+                                💡 <strong>解决方案：</strong>降维（PCA）、KD-Tree/Ball-Tree 加速、特征选择、加权投票
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- 工业界地位 -->
+                    <div class="info-card industry-card">
+                        <h3>🏢 工业界地位</h3>
+                        <div class="info-content">
+                            <span class="industry-usage usage-medium">特定场景使用</span>
+                            <p>KNN 在工业界的地位比较特殊：</p>
+                            <ul>
+                                <li><strong>推荐系统</strong>：Netflix、Amazon 早期使用基于 KNN 的协同过滤</li>
+                                <li><strong>图像检索</strong>：以图搜图的核心技术之一</li>
+                                <li><strong>异常检测</strong>：通过近邻距离判断是否异常</li>
+                                <li><strong>基线模型</strong>：快速建立基线，评估复杂模型的价值</li>
+                            </ul>
+                            <p style="margin-top: 12px; padding: 10px; background: #fef3c7; border-radius: 6px; font-size: 0.9rem;">
+                                🎯 <strong>现状</strong>：在大规模生产环境中，KNN 通常被更高效的近似最近邻（ANN）算法取代，如 FAISS、Annoy、HNSW 等。但 KNN 仍然是理解这些高级算法的基础。
+                            </p>
+                        </div>
                     </div>
                 </section>
 
@@ -122,7 +222,7 @@
                     <p>完整的 KNN 实现代码和实验</p>
                     <div class="notebook-actions">
                         <a href="notebook.ipynb" class="btn btn-primary">打开 Notebook</a>
-                        <a href="https://github.com/king157419/easyML" class="btn btn-secondary">easyML 代码仓</a>
+                        <a href="https://colab.research.google.com/github/king157419/easyML/blob/main/algorithms/knn/notebook.ipynb" target="_blank" class="btn btn-secondary">在 Colab 运行</a>
                     </div>
                     <div class="notebook-preview">
                         <p>包含内容：</p>
